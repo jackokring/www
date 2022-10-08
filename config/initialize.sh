@@ -22,9 +22,10 @@ node app.js
 
 # python install :8000
 # and a wolfram kernal :18000
-pip install autograd wolframwebengine
+# plus some local oomph via jax
+pip install autograd wolframwebengine jax[cpu]
 # full www directory. Not sutable for production
-# and cgi-bin handler
+# and cgi-bin handler for localhost use
 python3 -m http.server --cgi
 # wolfram web engine licence (V13.1)
 sudo cp secrets/LICENSE.txt /usr/local/Wolfram/WolframEngine/13.1
