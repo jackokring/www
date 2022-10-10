@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "TypeScript Build",
+            "command": "npx",
+            "args": [
+                "tsc"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/node"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Client Build",
+            "command": "gulp",
+            "args": [
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            }
+        },
+        {
+            "label": "Server Build",
+            "command": "gulp",
+            "args": [
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            }
+        },
+        {
+            "label": "Build",
+            "dependsOn": [
+                "Client Build",
+                "Server Build"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}
