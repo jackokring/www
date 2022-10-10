@@ -41,31 +41,36 @@
             }
         },
         {
-            "label": "Client Build",
-            "command": "gulp",
-            "args": [
-                "build"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/client"
-            }
-        },
-        {
-            "label": "Server Build",
-            "command": "gulp",
-            "args": [
-                "build"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/server"
-            }
-        },
-        {
-            "label": "Build",
+            "label": "Build Everything in Parallel",
             "dependsOn": [
-                "Client Build",
-                "Server Build"
-            ]
+                "TypeScript Build",
+                "Python Check Types",
+                "Markdown to HTML"
+            ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Relocate Everything in Parallel",
+            "dependsOn": [
+                
+            ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Do Everything",
+            "dependsOn": [
+                "Build Everything in Parallel",
+                "Relocate Everything in Parallel"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
