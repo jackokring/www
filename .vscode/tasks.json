@@ -31,6 +31,16 @@
             }
         },
         {
+            "label": "Markdown to HTML",
+            "command": "config/markdown.sh",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
             "label": "Client Build",
             "command": "gulp",
             "args": [

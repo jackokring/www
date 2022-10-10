@@ -29,7 +29,7 @@ sudo systemctl restart apache2
 
 # start node :3000
 cd node
-npm install express jquery bootstrap underscore browserify typescript
+npm install express jquery bootstrap underscore browserify typescript marked @types/marked
 node app.js&
 cd ..
 

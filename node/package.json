@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@tsconfig/node12": "^1.0.11",
+    "@types/marked": "^4.0.7",
     "bootstrap": "^5.2.2",
     "browserify": "^17.0.0",
     "jquery": "^3.6.1",

@@ -14,6 +14,10 @@ A local host simple server with `cgi-bin` is run with a root of `/var/www` on po
 
 A server is started to the `WolframEngine` in the `/var/www/wl` directory. Port `18000`. A license key is copied from `secrets` if present.
 
-## Node.js
+## Node.js / TypeScript
 
-A server is started in `/var/www/node` on port `3000`. A `npm install express jquery bootstrap underscore browserify` is performed to provide a basic system.
+A server is started in `/var/www/node` on port `3000`. A `npm install express jquery bootstrap underscore browserify typescript marked @types/marked` is performed to provide a basic system.
+
+## Markdown
+
+Compiles markdown to HTML and moves it to the main `/var/www/html` folder.
