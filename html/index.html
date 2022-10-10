@@ -6,7 +6,11 @@
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.6/underscore-umd-min.js"></script>
   </head>
   <body>
-    <a href="https://colab.research.google.com/">colab.research.google.com</a> A link to colab. <br/>
+    <ul id="offsite-links">
+      <li><a href="https://colab.research.google.com/">Google Colabs</a></li>
+      <li><a href="https://pyodide.org/en/stable/usage/api/js-api.html">Pyodide API</a></li>
+      <li><a href="https://marked.js.org/">Marked Markdown API</a></li>
+    </ul>
     <script type="text/javascript">
       const myWorker = new Worker('python-worker.js');
       myWorker.onmessage = (e) => {
