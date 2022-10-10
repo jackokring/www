@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Server
+Exec=/var/www/config/initialize.sh
+Comment=Custom server app
+Terminal=false
+Icon=applications-development
+Type=Application
+Name[en_GB]=server.desktop
