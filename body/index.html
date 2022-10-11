@@ -8,7 +8,7 @@
       <li><a href="https://underscorejs.org/">Underscore API</a></li>
     </ul>
     <script type="text/javascript">
-      const myWorker = new Worker('python-worker.js');
+      const myWorker = new Worker('js/python-worker.js');
       myWorker.onmessage = (e) => {
         console.log(e.data);
         myWorker.terminate();//maybe
