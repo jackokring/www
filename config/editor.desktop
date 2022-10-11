@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Editor
+Exec=/var/www/config/editor.sh
+Comment=Custom server app (edit)
+Terminal=false
+Icon=applications-development
+Type=Application
+Name[en_GB]=editor.desktop

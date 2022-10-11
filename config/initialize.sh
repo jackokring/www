@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+source environment.sh
 
 # it all happens here
 cd /var/www
@@ -16,7 +17,7 @@ sudo chown -R $USER /var/www
 # and make all config shell scripts executable
 # change "server" to be unique 
 chmod +x config/*.sh
-desktop-file-install --dir=~/.local/share/applications config/server.desktop
+desktop-file-install --dir=~/.local/share/applications config/*.desktop
 update-desktop-database ~/.local/share/applications
 
 # make git repository if possible
@@ -27,9 +28,13 @@ sudo cp 000-default.conf /etc/apache2/sites-available
 sudo a2ensite 000-default
 sudo systemctl restart apache2
 
-# start node :3000
 cd node
 npm install express jquery bootstrap underscore browserify typescript marked @types/marked
+
+# build typings
+find . -name "*.d.ts" -type f -exec cp {} ../typings \;
+
+# start node :3000
 node app.js&
 cd ..
 
@@ -43,7 +48,7 @@ python3 -m http.server --cgi --bind 127.0.0.1&
 
 # and a wolfram kernal :18000
 # wolfram web engine licence (V13.1)
-sudo cp secrets/LICENSE.txt /usr/local/Wolfram/WolframEngine/13.1
+sudo cp secrets/LICENSE.txt /usr/local/Wolfram/WolframEngine/$mathematicaVersion
 python3 -m wolframwebengine wl&
 
 # so then launch browser default

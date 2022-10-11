@@ -1,6 +1,6 @@
 # Generic Server
 
-Place the directory structure at `/var/www` and run `config/initialize.sh` to perform all the default run requirements. This will add an application shortcut `server.desktop` for the current user.
+Place the directory structure at `/var/www` and run `config/initialize.sh` to perform all the default run requirements. This will add an application shortcut `server.desktop` for the current user. Also `config/editor.sh` runs vscode with an environment addition from `config/environment.sh` for settings.
 
 ## Apache/PHP
 

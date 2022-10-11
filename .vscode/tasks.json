@@ -7,9 +7,6 @@
             "args": [
                 "tsc"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}/node"
-            },
             "problemMatcher": [
                 "$tsc"
             ],
@@ -21,11 +18,8 @@
             "label": "Python Check Types",
             "command": "mypy",
             "args": [
-                "${workspaceFolder}/py"
+                "${workspaceFolder}"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
             "group": {
                 "kind": "build"
             }
@@ -33,9 +27,13 @@
         {
             "label": "Markdown to HTML",
             "command": "config/markdown.sh",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Bodies to HTML",
+            "command": "config/make-html.sh",
             "group": {
                 "kind": "build"
             }
@@ -45,8 +43,23 @@
             "dependsOn": [
                 "TypeScript Build",
                 "Python Check Types",
-                "Markdown to HTML"
+                "Markdown to HTML",
+                "Bodies to HTML"
             ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Move CSS and JS",
+            "command": "config/move-css-js.sh",
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Move Python",
+            "command": "config/move-py.sh",
             "group": {
                 "kind": "build"
             }
@@ -54,7 +67,8 @@
         {
             "label": "Relocate Everything in Parallel",
             "dependsOn": [
-                
+                "Move CSS and JS",
+                "Move Python"
             ],
             "group": {
                 "kind": "build"
