@@ -22,6 +22,8 @@ do
     cp "$f" ../html/js
 done
 
+npx browserify client/*.js > browserified-all.js 
+
 for f in server/*.js
 do
     cp "$f" ../node/js
