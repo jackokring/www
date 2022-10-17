@@ -8,4 +8,4 @@ chmod +x *.sh
 mypy .
 
 # and TypeScript here
-npx tsc
+tsc

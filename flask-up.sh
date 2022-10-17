@@ -3,7 +3,7 @@
 
 # make sure dependancies are updated
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential git
+sudo apt install -y build-essential git node-typescript
 
 # activate virtual environment
 source venv/bin/activate

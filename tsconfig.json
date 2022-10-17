@@ -14,9 +14,7 @@
         "paths": {
             "*": ["ts/*"]
         },
-        "preserveConstEnums": true,
-        "allowJs": true,
-        "checkJs": true
+        "preserveConstEnums": true
     },
     "exclude": ["node_modules", "**/*.spec.ts"]
 }
