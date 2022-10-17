@@ -2,21 +2,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "TypeScript Build",
-            "command": "npx",
-            "args": [
-                "tsc"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
-            "label": "Python Check Types",
-            "command": "mypy",
+            "label": "Type Check and Build",
+            "command": "check-src.sh",
             "args": [
                 "${workspaceFolder}"
             ],
@@ -25,65 +12,23 @@
             }
         },
         {
-            "label": "Markdown to HTML",
-            "command": "config/markdown.sh",
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
-            "label": "Bodies to HTML",
-            "command": "config/make-html.sh",
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
-            "label": "Build Everything in Parallel",
-            "dependsOn": [
-                "TypeScript Build",
-                "Python Check Types",
-                "Markdown to HTML",
-                "Bodies to HTML"
+            "label": "Install Server SSL (Once Only)",
+            "command": "certbot-once.sh",
+            "args": [
+                "${workspaceFolder}"
             ],
             "group": {
                 "kind": "build"
             }
         },
         {
-            "label": "Move CSS and JS",
-            "command": "config/move-css-js.sh",
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
-            "label": "Move Python",
-            "command": "config/move-py.sh",
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
-            "label": "Relocate Everything in Parallel",
-            "dependsOn": [
-                "Move CSS and JS",
-                "Move Python"
+            "label": "Launch Flask",
+            "command": "flask-up.sh",
+            "args": [
+                "${workspaceFolder}"
             ],
             "group": {
                 "kind": "build"
-            }
-        },
-        {
-            "label": "Do Everything",
-            "dependsOn": [
-                "Build Everything in Parallel",
-                "Relocate Everything in Parallel"
-            ],
-            "dependsOrder": "sequence",
-            "group": {
-                "kind": "build",
-                "isDefault": true
             }
         }
     ]
