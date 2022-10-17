@@ -10,9 +10,9 @@
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node",
         "outDir":"static/js/",
-        "baseUrl":"ts/",
+        "baseUrl":".",
         "paths": {
-            "*": ["*"]
+            "*": ["ts/*"]
         },
         "preserveConstEnums": true,
         "allowJs": true,
