@@ -10,3 +10,6 @@ The script `check-src.sh` checks the sources for errors where possible, and comp
 
 The script `flask-up.sh` starts the flask server. There is a task for this. Depending on the `DEBUG` variable in `config-env.sh` either the debug `http` or deploy `https` server is started. The `certbot-once.sh` creates the keys for the SSL port `443` server. Don't forget to change the `DOMAIN` variable in `config.py` as the domain will not be the same for you. It is used to locate the domain keys.
 
+# Bootstrap and Less
+
+The basic browser version of `.less` is available. A minified version of bootstrap is also served from a CDN. This makes easy HTML decoration, and cuts down on server loading.
