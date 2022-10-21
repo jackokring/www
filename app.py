@@ -27,16 +27,19 @@ def render(template, vars):
     } | vars;
     return render_template(template, **vars)
 
+def logError(code):
+    logging.error(code + ": " + request.remote_addr + " " + request.url)
+
 @app.errorhandler(404)
-def page_not_found(e):
+def pageNotFound(e):
     # note that we set the 404 status explicitly
-    logging.warn("404: " + request.remote_addr + " " + request.url)
+    logError(404)
     return render('404.html', {
 
     }), 404
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def helloWorld():
+    return render("index.html")
 
 # there is a default static service directory of /static/<path:p>
