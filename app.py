@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template
 import logging
+import config
 
 config = logging.config.dictConfig({
     'version': 1,
@@ -18,11 +19,20 @@ logging.basicConfig(**config)
 
 app = Flask(__name__)
 
+def render(template, vars):
+    # allow a dictionary wrap of named vars
+    # plus merge on top of some sensible defaults
+    vars = {
+        'title': config.DOMAIN
+    } | vars;
+    return render_template(template, **vars)
 
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template('404.html'), 404
+    return render('404.html', {
+        
+    }), 404
 
 @app.route("/")
 def hello_world():
