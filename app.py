@@ -1,6 +1,6 @@
 # Main application
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import logging
 import config
 
@@ -30,8 +30,9 @@ def render(template, vars):
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
+    logging.warn("404: " + request.remote_addr + " " + request.url)
     return render('404.html', {
-        
+
     }), 404
 
 @app.route("/")
