@@ -2,7 +2,7 @@
 # apply certbot to machine (with web server not running)
 
 sudo apt update
-sudo apt install -y python3 python3-venv libaugeas0 python-is-python3 openssl
+sudo apt install -y git python3 python3-venv libaugeas0 python-is-python3 openssl
 
 sudo python -m venv /opt/certbot/
 sudo /opt/certbot/bin/pip install --upgrade pip
@@ -16,6 +16,9 @@ sudo certbot certonly --standalone
 echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 
 echo "0 0 1 * * root /home/$USER/www/cron-monthly.sh" | sudo tee -a /etc/crontab > /dev/null
+
+# clone repository without secrets
+git clone https://github.com/jackokring/www.git
 
 cd ~/www
 python -m venv venv

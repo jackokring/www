@@ -1,4 +1,19 @@
 from app import app
+from config import DOMAIN
+from flask import request, redirect, Flask
 
-if __name__ == "__main__":
-    app.run(ssl_context=('cert.pem', 'key.pem'))
+CERT = "/etc/letsencrypt/live/" + DOMAIN + "/fullchain.pem"
+KEY = "/etc/letsencrypt/live/" + DOMAIN + "/privkey.pem"
+
+port80 = Flask(__name__)
+
+@port80.before_request
+def before_request():
+    if not request.is_secure:
+        url = request.url.replace('http://', 'https://', 1)
+        code = 303
+        return redirect(url, code=code)
+
+if __name__ == '__main__':
+    port80.run(port=80)
+    app.run(port="443", ssl_context=(CERT, KEY))
