@@ -21,3 +21,5 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+# there is a default static service directory of /static/<path:p>

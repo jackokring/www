@@ -20,7 +20,10 @@ pip install autograd jax[cpu] mypy Flask pandas scikit-learn
 # get config information
 source config-env.sh
 
-if [[ -n $DEBUG ]]
+sudo killall --user $USER flask
+sudo killall --user $USER ssl-boot.py
+
+if [[ $DEBUG = True ]]
 then
     echo "DEBUG Server."
     # so then launch browser default
