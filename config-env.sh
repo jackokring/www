@@ -15,7 +15,7 @@ pip install --upgrade pip
 pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 
 # install python packages on top
-pip install autograd jax[cpu] mypy Flask pandas scikit-learn
+pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel
 
 # make sure there's nothing running which is a duplicate
 sudo killall --user $USER flask

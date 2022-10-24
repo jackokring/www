@@ -1,10 +1,10 @@
 # Main application
 
 from flask import Flask, render_template, request
-import logging
 import config
+import logging
 
-config = logging.config.dictConfig({
+logConfig = {
     'version': 1,
     'filename': 'log.log',
     'filemode': 'a',
@@ -13,9 +13,9 @@ config = logging.config.dictConfig({
     'formatters': {'default': {
         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
     }}
-})
+}
 
-logging.basicConfig(**config)
+logging.basicConfig(**logConfig)
 
 app = Flask(__name__)
 
