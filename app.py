@@ -44,6 +44,8 @@ def pageNotFound(e):
 
 @app.route("/")
 def helloWorld():
-    return render("index.html")
+    return render('index.html', {
+        'title': 'Index'
+    })
 
 # there is a default static service directory of /static/<path:p>
