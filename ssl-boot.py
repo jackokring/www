@@ -1,9 +1,9 @@
-from app import app
-from config import DOMAIN
+import app
+import config
 from flask import request, redirect, Flask
 
-CERT = "/etc/letsencrypt/live/" + DOMAIN + "/fullchain.pem"
-KEY = "/etc/letsencrypt/live/" + DOMAIN + "/privkey.pem"
+CERT = "/etc/letsencrypt/live/" + config.DOMAIN + "/fullchain.pem"
+KEY = "/etc/letsencrypt/live/" + config.DOMAIN + "/privkey.pem"
 
 port80 = Flask(__name__)
 

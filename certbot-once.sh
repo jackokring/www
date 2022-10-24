@@ -20,5 +20,6 @@ echo "0 0 1 * * root /home/$USER/www/cron-monthly.sh" | sudo tee -a /etc/crontab
 # clone repository without secrets
 git clone https://github.com/jackokring/www.git
 
+# make virtual environment called venv
 cd ~/www
 python -m venv venv

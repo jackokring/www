@@ -1,2 +1,4 @@
 # not public as it would be bad
 secrets/
+venv/
+log.log
