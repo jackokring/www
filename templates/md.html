@@ -7,7 +7,6 @@
 {% block body_script %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-    document.getElementById('markdown').innerHTML =
-      marked.parse('# Marked in the browser\n\nRendered by **marked**.');
+    markdown('markdown');//fill target with <file>.md
 </script>
 {% endblock %}

@@ -22,9 +22,13 @@ app = Flask(__name__)
 def render(template, vars):
     # allow a dictionary wrap of named vars
     # plus merge on top of some sensible defaults
+    # and have som restrictions for definites
+    restrict = {
+
+    }
     vars = {
         'title': config.DOMAIN
-    } | vars;
+    } | vars | restrict;
     return render_template(template, **vars)
 
 def logError(code):

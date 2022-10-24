@@ -9,4 +9,4 @@ mypy .
 
 # and TypeScript here
 # seems to be automatic vscode compile
-tsc
+#tsc

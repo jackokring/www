@@ -4,7 +4,7 @@ Place repository at `~/www` (`https://github.com/jackokring/www.git` while in th
 
 # Check Source
 
-The script `check-src.sh` checks the sources for errors where possible, and compiles any TypeScript to JavaScript. **There is a task for this**. This is where any checks before launch are performed. For example it makes all `.sh` scripts executable.
+The script `check-src.sh` checks the sources for errors where possible. TypeScript to JavaScript is such a node hog so no not here. **There is a task for this**. This is where any checks before launch are performed. For example it makes all `.sh` scripts executable. All site JavaScript is in `static/js/main.js`.
 
 # Cron Monthly
 
@@ -16,4 +16,4 @@ The script `flask-up.sh` starts the flask debug server. **There is a task for th
 
 # Bootstrap and Less
 
-The basic browser version of `less` CSS is available. A minified version of bootstrap is also served from a CDN. This makes easy HTML decoration, and cuts down on server loading.
+The basic browser version of `main.less` CSS is available. A minified version of bootstrap is also served from a CDN. This makes easy HTML decoration, and cuts down on server loading.
