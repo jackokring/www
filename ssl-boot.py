@@ -1,4 +1,4 @@
-import app
+from app import app 
 import config
 from flask import request, redirect, Flask
 
