@@ -1,5 +1,6 @@
 function markdown(target) {
-    fetch(window.location.href + '.md')
+    fetch(window.location.host + '/md'
+        + window.location.pathname + '.md')
     .then((response) => {
         if(response.ok) {
             return response.text();

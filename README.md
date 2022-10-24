@@ -17,3 +17,7 @@ The script `flask-up.sh` starts the flask debug server. **There is a task for th
 # Bootstrap and Less
 
 The basic browser version of `main.less` CSS is available. A minified version of bootstrap is also served from a CDN. This makes easy HTML decoration, and cuts down on server loading.
+
+# Markdown
+
+A markdown load template loads the HTML template and requests a `/md` prepended to the page URL after the host and a `.md` on the end for mimetyping, so fetching and rendering the markdown into the page.
