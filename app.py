@@ -1,6 +1,6 @@
 # Main application
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import config
 import logging
 
@@ -42,7 +42,7 @@ def pageNotFound(e):
 
     }), 404
 
-@app.route("/")
+@app.route('/')
 def helloWorld():
     return render('index.html', {
         'title': 'Index'
@@ -51,3 +51,6 @@ def helloWorld():
 # there is a default static service directory of /static/<path:p>
 
 # needs markdown pre-processing
+@app.route('md/<path:p>')
+def markdown(p):
+    return send_from_directory('md', p)
