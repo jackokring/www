@@ -7,6 +7,8 @@
 {% block body_script %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-    markdown('markdown');//fill target with <file>.md
+    markdown('markdown', (error, html) => {
+
+    });//fill target with '/static/md/<file>.md'
 </script>
 {% endblock %}

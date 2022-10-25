@@ -26,7 +26,8 @@ def render(template, vars):
     # plus merge on top of some sensible defaults
     # and have som restrictions for definites
     restrict = {
-
+        'management': 'The Management ',
+        'site': config.DOMAIN
     }
     vars = {
         'title': config.DOMAIN
@@ -38,21 +39,35 @@ def logError(code):
 
 @app.errorhandler(404)
 def pageNotFound(e):
-    # note that we set the 404 status explicitly
-    logError(404)
-    return render('404.html', {
-
+    """404 error page"""
+    logError('No page named')
+    return render('error.html', {
+        'title': 'The page requested could not be found',
+        'error': 'Perhaps we forgot to include the page. Perhaps the URL is old. Maybe something else.'
     }), 404
 
 @app.route('/')
-def helloWorld():
+def index():
+    """render index page"""
     return render('index.html', {
         'title': 'Index'
     })
 
-# there is a default static service directory of /static/<path:p>
+# there is a default static service directory of /static/<path>
+# this serves static markdown too
 
-# needs markdown pre-processing
-@app.route('md/<path:p>')
-def markdown(p):
-    return send_from_directory('md', p)
+@app.route('/md/<path>')
+def markdown(path):
+    """the template will get '/static/md/<path>.md'"""
+    return render('md.html', {
+        # render title breadcrumb
+        'title': path.replace('/', ' - ')
+    })
+
+@app.route('/py/<path>')
+def pyodide(path):
+    """the template will get '/static/py/<path>.py'"""
+    return render('py.html', {
+        # render title breadcrumb
+        'title': path.replace('/', ' - ')
+    })

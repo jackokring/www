@@ -1,0 +1,38 @@
+{% extends 'html.html' %}
+
+{% block body %}
+<div id="python"></div>
+{% endblock %}
+
+{% block body_script %}
+<script type="text/javascript">
+    const myWorker = new Worker('/static/js/python-worker.js');
+    myWorker.onmessage = (e) => {
+        console.log(e.data);
+        const { results, callback } = event.data;
+        if(event.data.error) {
+            console.log(results);
+            return;
+        }
+        // (body, results) => {}
+        if (!callback(document.getElementById['python'], results)) {
+            myWorker.terminate();//maybe if undefined or null
+        }
+    }
+    function callPython(python, context, callback) {
+        myWorker.postMessage({ callback, python, context });
+    }
+    fetch(window.location.host + '/static/py'
+        + window.location.pathname + '.py')
+    .then((response) => {
+        if(response.ok) {
+            return response.text();
+        }
+    })
+    .then((result) => {
+        callPython(result, document, (output, results) => {
+            output.innerHTML = results;
+        });
+    });
+</script>
+{% endblock %}

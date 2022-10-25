@@ -4,7 +4,7 @@ Place repository at `~/www` (`https://github.com/jackokring/www.git` while in th
 
 # Check Source
 
-The script `check-src.sh` checks the sources for errors where possible. TypeScript to JavaScript is such a node hog so no not here. **There is a task for this**. This is where any checks before launch are performed. For example it makes all `.sh` scripts executable. All site JavaScript is in `static/js/main.js`.
+The script `check-src.sh` checks the sources for errors where possible. TypeScript to JavaScript is such a node hog so no not here. **There is a task for this**. This is where any checks before launch are performed. For example it makes all `.sh` scripts executable. All site specific JavaScript is in `static/js/main.js`.
 
 # Cron Monthly
 
@@ -20,4 +20,8 @@ The basic browser version of `main.less` CSS is available. A minified version of
 
 # Markdown
 
-A markdown load template loads the HTML template and requests a `/md` prepended to the page URL after the host and a `.md` on the end for mimetyping, so fetching and rendering the markdown into the page.
+A markdown load template loads the HTML template and requests a `/static/md` prepended to the page path after the host name and a `.md` on the end for mimetyping, so fetching and rendering the markdown into the page.
+
+# Python and Pyodide
+
+Browser Python via WASM is provided in `py.html` using a web worker. In a similar way to markdown `/static/py` with an appended `.py` is used to load code.

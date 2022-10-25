@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<blockquote class="blockquote text-center">
+    <p class="mb-0">
+        {{ error }}
+    </p>
+    <footer class="blockquote-footer">
+        {{ management }}
+        <cite title="Source Title">
+            {{ site }}
+        </cite>
+    </footer>
+</blockquote>
+{% endblock %}

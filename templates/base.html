@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ title }}</title>
     <link rel="stylesheet/less" type="text/css" href="/static/css/main.less" />
     <script src="https://cdn.jsdelivr.net/npm/less"></script>
@@ -9,12 +10,16 @@
     <script src="/static/js/main.js"></script>
 </head>
 <body>
+    <h1>
     {% block heading %}
+    {{ title }}
     {% endblock %}
-    
-    {% block body %}
+    </h1>
+    <div class="container-fluid">
+    {% block container %}
     {% endblock %}
-
+    </div>
+    <h6>Design by K Ring Technologies Ltd (No. 09861978)</h6>
     {% block body_script %}
     {% endblock %}
 </body>
