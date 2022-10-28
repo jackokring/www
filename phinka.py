@@ -5,19 +5,14 @@ import autograd.numpy as np
 from autograd import grad
 #from autograd import elementwise_grad as egrad
 
-def seriesListItem(f, x):
-    """yields the series of gradient evaluations"""
-    diff = f
-    while True:
-        yield diff(x)
-        diff = grad(diff)     # type: ignore
-
 def seriesList(f, x, n):
-    """creates a list of differentials of increasing order"""
+    """the series of gradient evaluations"""
     l = []
+    diff = f
     for i in range(0, n):
-        l.append(seriesListItem(f, x))
-    return l        
+        l.append(diff(x))
+        diff = grad(diff)     # type: ignore
+    return l     
 
 def cumulateList(l):
     """accumulates a list as a cumulative total"""
@@ -26,13 +21,7 @@ def cumulateList(l):
     for i in len(l):  # type: ignore
         sum = sum + l[i]
         m.append(sum)
-    return m
-
-def multipliedListNorm(x, n): # use a differential generator?
-    l = []
-    for i in range(0, n):
-        l.append(??)
-    return l   
+    return m  
 
 def integralAsymtotic(f, x, n, method):
     """integral end point series terms"""
@@ -45,3 +34,22 @@ def integralAsymtotic(f, x, n, method):
 
 def seriesAccelerate(l):
     """perform series convergence"""
+
+def integralNorm(f, x, n):
+    """use normal x^0 -> 1 approximation"""
+    def multiply(x, n): # use a differential generator?
+        l = []
+        for i in range(0, n):
+            l.append()
+        return l
+    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
+
+def integralPole(f, x, n):
+    """use pole Laurent approximation"""
+
+    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
+
+def integralLog(f, x, n):
+    """use log nested series approximation"""
+
+    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
