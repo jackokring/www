@@ -1,5 +1,6 @@
 # phinka specific python
 # vjp -- it's alright
+# the back propergator likely is just an easy f identity
 
 import autograd.numpy as np
 from autograd import grad
