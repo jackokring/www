@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body_script %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script type="text/javascript">
     const myWorker = new Worker('/static/js/python-worker.js');
     myWorker.onmessage = (e) => {
@@ -30,8 +31,13 @@
         }
     })
     .then((result) => {
+        // use markdown processing of output
         callPython(result, document, (output, results) => {
-            output.innerHTML = results;
+            output.innerHTML = marked(results, {
+                ghm: true
+            }, (error, html) => {
+
+            });
         });
     });
 </script>
