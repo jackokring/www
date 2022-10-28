@@ -46,10 +46,18 @@ def integralNorm(f, x, n):
 
 def integralPole(f, x, n):
     """use pole Laurent approximation"""
-
+    def multiply(x, n): # use a differential generator?
+        l = []
+        for i in range(0, n):
+            l.append()
+        return l
     return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
 
 def integralLog(f, x, n):
     """use log nested series approximation"""
-
+    def multiply(x, n): # use a differential generator?
+        l = []
+        for i in range(0, n):
+            l.append()
+        return l
     return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
