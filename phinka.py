@@ -5,6 +5,8 @@ import autograd.numpy as np
 from autograd import grad
 #from autograd import elementwise_grad as egrad
 
+import math
+
 def seriesList(f, x, n):
     """the series of gradient evaluations"""
     l = []
@@ -37,27 +39,53 @@ def seriesAccelerate(l):
 
 def integralNorm(f, x, n):
     """use normal x^0 -> 1 approximation"""
-    def multiply(x, n): # use a differential generator?
+    def multiply(x, n):
         l = []
+        xp = -x
         for i in range(0, n):
-            l.append()
+            l.append(-xp)
+            xp = xp * -x / (i + 2)  # as = 0 at calc for 1
         return l
     return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
 
 def integralPole(f, x, n):
     """use pole Laurent approximation"""
-    def multiply(x, n): # use a differential generator?
+    def multiply(x, n):
         l = []
+        xp = -x * x / 2
         for i in range(0, n):
-            l.append()
+            l.append(-xp)
+            xp = xp * -x / (i + 3)  # as = 0 at calc for 1
         return l
-    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
+    return seriesAccelerate(integralAsymtotic(lambda x: (f(x) / x), x, n, multiply))
+
+def integralLogAssistant(f, x, n, k):
+    def multiply(x, n):
+        l = []
+        xp = -x * x * math.pow(x, k) / (k + 2) # as = 0 at calc for 1
+        for j in range(0, n):
+            l.append(-xp)
+            xp = xp * -x / (k + j + 3)
+        return l
+    return seriesAccelerate(integralAsymtotic(lambda x: grad(grad(x * f(x))), x, n, multiply))  # type: ignore
 
 def integralLog(f, x, n):
     """use log nested series approximation"""
-    def multiply(x, n): # use a differential generator?
+    def multiply(x, n):
         l = []
+        xp = -1
         for i in range(0, n):
-            l.append()
+            l.append(-xp)
+            xp = xp * -x / (i + 2)  # as = 0 at calc for 1
         return l
-    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
+    logPart = x * f(x) * math.log(x)
+    entropyPart = -(x - x * math.log(x)) * seriesAccelerate(integralAsymtotic(lambda x: grad(x * f(x)), x, n, multiply))  # type: ignore
+    total = logPart + entropyPart
+    doubleSumParts = []
+    scale = -1 / 2
+    for i in range(0, n):
+        part = integralLogAssistant(f, x, n, i) * -scale  # type: ignore
+        doubleSumParts.append(part)  # type: ignore
+        scale = scale / -(i + 3) # as = 0 at calc for 1
+    doubleSum = seriesAccelerate(cumulateList(doubleSumParts))
+    return total + doubleSum    # the total
