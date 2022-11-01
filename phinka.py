@@ -1,6 +1,10 @@
 # phinka specific python
 # vjp -- it's alright
 # the back propergator likely is just an easy f identity
+# as differential of integral of f -> f
+# the forms are for activity of x * f(x) / x where the x behaviour is x / x ...
+
+# adapt parameter order for partial applications
 
 import autograd.numpy as np
 from autograd import grad
@@ -8,71 +12,92 @@ from autograd import grad
 
 import math
 
-def seriesList(f, x, n):
+def seriesList(n, f, x):
     """the series of gradient evaluations"""
     l = []
     diff = f
     for i in range(0, n):
         l.append(diff(x))
-        diff = grad(diff)     # type: ignore
+        diff = grad(diff)     
     return l     
 
 def cumulateList(l):
     """accumulates a list as a cumulative total"""
     m = []
     sum = 0
-    for i in len(l):  # type: ignore
+    for i in len(l):  
         sum = sum + l[i]
         m.append(sum)
     return m  
 
-def integralAsymtotic(f, x, n, method):
+def integralAsymtotic(n, method, f, x):
     """integral end point series terms"""
-    d = seriesList(f, x, n)
-    m = method(x, n)
+    d = seriesList(n, f, x)
+    m = method(n, x)
     out = []
     for i in range(0, n):
         out.append(d[i] * m[i])
     return cumulateList(out)    
 
-def seriesAccelerate(l):
-    """perform series convergence"""
+def aitkin(a, b, c):
+    """calculate the Aitkin series term from 3 terms"""
+    deltaCB = (c - b)
+    return c - deltaCB * deltaCB / (deltaCB - (b - a))
 
-def integralNorm(f, x, n):
+def seriesAccelerate(l):
+    """perform series aymtotic convergence if possible"""
+    argc = len(l)
+    if argc <= 0:
+        raise TypeError('seriesAccelerate must have one positive length input')
+    elif argc == 1:
+        return l[0]
+    elif argc == 2:
+        # second should be more accurate
+        return l[1]
+    elif argc == 3:
+        return aitkin(l[0], l[1], l[2])
+    out = []
+    for i in range(0, argc - 2):
+        out.append(aitkin(l[i], l[i + 1], l[i + 2]))
+    # tail recurse
+    return seriesAccelerate(out)
+
+def integralNorm(n, f, x):
     """use normal x^0 -> 1 approximation"""
-    def multiply(x, n):
+    def multiply(n, x):
         l = []
         xp = -x
         for i in range(0, n):
             l.append(-xp)
             xp = xp * -x / (i + 2)  # as = 0 at calc for 1
         return l
-    return seriesAccelerate(integralAsymtotic(f, x, n, multiply))
+    return seriesAccelerate(integralAsymtotic(n, multiply, f, x))
 
-def integralPole(f, x, n):
+def integralPole(n, f, x):
     """use pole Laurent approximation"""
-    def multiply(x, n):
+    def multiply(n, x):
         l = []
         xp = -x * x / 2
         for i in range(0, n):
             l.append(-xp)
             xp = xp * -x / (i + 3)  # as = 0 at calc for 1
         return l
-    return seriesAccelerate(integralAsymtotic(lambda x: (f(x) / x), x, n, multiply))
+    return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: (f(x) / x), x))
 
-def integralLogAssistant(f, x, n, k):
-    def multiply(x, n):
+def integralLogAssistant(n, k, f, x):
+    """assistant function for nested series in log approximation"""
+    def multiply(n, x):
         l = []
         xp = -x * x * math.pow(x, k) / (k + 2) # as = 0 at calc for 1
         for j in range(0, n):
             l.append(-xp)
             xp = xp * -x / (k + j + 3)
         return l
-    return seriesAccelerate(integralAsymtotic(lambda x: grad(grad(x * f(x))), x, n, multiply))  # type: ignore
+    return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(grad(x * f(x))), x))  
 
-def integralLog(f, x, n):
+def integralLog(n, f, x):
     """use log nested series approximation"""
-    def multiply(x, n):
+    def multiply(n, x):
         l = []
         xp = -1
         for i in range(0, n):
@@ -80,13 +105,13 @@ def integralLog(f, x, n):
             xp = xp * -x / (i + 2)  # as = 0 at calc for 1
         return l
     logPart = x * f(x) * math.log(x)
-    entropyPart = -(x - x * math.log(x)) * seriesAccelerate(integralAsymtotic(lambda x: grad(x * f(x)), x, n, multiply))  # type: ignore
+    entropyPart = -(x - x * math.log(x)) * seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(x * f(x)), x))  
     total = logPart + entropyPart
     doubleSumParts = []
     scale = -1 / 2
     for i in range(0, n):
-        part = integralLogAssistant(f, x, n, i) * -scale  # type: ignore
-        doubleSumParts.append(part)  # type: ignore
+        part = integralLogAssistant(n, i, f, x) * -scale  
+        doubleSumParts.append(part)  
         scale = scale / -(i + 3) # as = 0 at calc for 1
     doubleSum = seriesAccelerate(cumulateList(doubleSumParts))
     return total + doubleSum    # the total

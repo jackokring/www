@@ -4,5 +4,5 @@
     "jake.autoDetect": "off",
     "gulp.autoDetect": "off",
     "npm.autoDetect": "off",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "off"
   }  
