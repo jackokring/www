@@ -10,7 +10,7 @@ import autograd.numpy as np
 from autograd import grad
 #from autograd import elementwise_grad as egrad
 
-import math
+import math # mumpy.vectorize ...
 
 def seriesList(n, f, x):
     """the series of gradient evaluations"""
