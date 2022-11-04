@@ -25,3 +25,9 @@ A markdown load template loads the HTML template and requests a `/static/md` pre
 # Python and Pyodide
 
 Browser Python via WASM is provided in `py.html` using a web worker. In a similar way to markdown `/static/py` with an appended `.py` is used to load code.
+
+# Various `.py`
+
+`blwz.py` - a data-compression format using some of the best and adding in (or technically removing) **self-partition mutual information** (a form of information fission).
+
+`phinka.py` - calculus tools and other mathemeatical functions.
