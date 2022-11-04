@@ -6,6 +6,8 @@
 
 # adapt parameter order for partial applications
 
+# TODO: create partial applications and add autograd vjp registration
+
 import autograd.numpy as np
 from autograd import grad
 #from autograd import elementwise_grad as egrad
@@ -115,3 +117,11 @@ def integralLog(n, f, x):
         scale = scale / -(i + 3) # as = 0 at calc for 1
     doubleSum = seriesAccelerate(cumulateList(doubleSumParts))
     return total + doubleSum    # the total
+
+def preScale(f, xmax, magConverge = 0.5):
+    """keep x in convergent domain"""
+    return lambda x2: f(x2 / xmax * magConverge)
+
+def postScale(result, xmax, magConverge = 0.5):
+    """rescale x back to full integral domain"""
+    return lambda x2: result * xmax / magConverge
