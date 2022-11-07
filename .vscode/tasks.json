@@ -12,6 +12,16 @@
             }
         },
         {
+            "label": "Build Python PyPI Distribution",
+            "command": "build-module.sh",
+            "args": [
+                "${workspaceFolder}"
+            ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
             "label": "Install Server SSL (Once Only)",
             "command": "certbot-once.sh",
             "args": [
