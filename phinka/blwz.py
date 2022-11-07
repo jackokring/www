@@ -1,4 +1,7 @@
 # BLWZ file compression
+
+from mypytypes import OptionsDict
+
 # use encode/decode('UTF-8') for b' -> '
 
 # gzip import for .open(file)
@@ -25,12 +28,13 @@ def asNumber(bytes):
         raise ValueError('dictionary pointers limited to 3 bytes')
     return int.from_bytes(bytes, 'big')
 
-def lzw(uncompressed):
+def lzw(uncompressed, context):
     """Compress a string to a list of output symbols."""
 
     # Build the dictionary.
     dictSize = 256
     dictionary = {chr(i): i for i in range(dictSize)}
+    maxDict = context['maxDict']
 
     first = True
     w = b''
@@ -48,7 +52,8 @@ def lzw(uncompressed):
             result.append(asBytes(out))
             # Add wc to the dictionary.
             dictionary[wc] = dictSize
-            dictSize += 1
+            if dictSize < maxDict:
+                dictSize += 1
             w = c
 
     # Output the code for w for final symbol
@@ -56,12 +61,13 @@ def lzw(uncompressed):
         result.append(asBytes(inverted(dictSize, dictionary[w])))
     return result
 
-def ilzw(compressed):
+def ilzw(compressed, context):
     """Decompress a list of output ks to a string."""
 
     # Build the dictionary.
     dictSize = 256
     dictionary = {i: i.to_bytes(1) for i in range(dictSize)}
+    maxDict = context['maxDict']
 
     if len(compressed) == 0:
         return b''  # null compressed
@@ -86,14 +92,28 @@ def ilzw(compressed):
 
         # Add w+entry[0] to the dictionary.
         dictionary[dictSize] = w + entry[0]
-        dictSize += 1
+        if dictSize < maxDict:
+            dictSize += 1
 
         w = entry
     return result.getvalue()
 
-# BWT code
+# swivel codes
 
-blockSize = 65536   # set the block size
+def swivel(list):
+    """splits 3 bytes into slow, medium and fast changing stream parts"""
+    result = []
+    if len(list) < 1:
+        return result
+    length = len(list[0])
+    for i in range(0, length):
+        buffer = BytesIO()
+        for j in range(0, len(list)):
+            buffer.write(list[j][i])
+        result.append(buffer.getvalue())
+    return result
+
+# BWT code
 
 def counts(s):
     """count character totals in binary string"""
@@ -103,7 +123,7 @@ def counts(s):
         T[s[i]] += 1    # add a char
     return T
 
-def bwt(s):
+def bwt(s, context: OptionsDict):
     """Burrows-Wheeler transform"""
     n = len(s)
     m = sorted([s[i:n] + s[0:i] for i in range(n)])
@@ -113,7 +133,7 @@ def bwt(s):
 
 from operator import itemgetter
 
-def ibwt(I, L):
+def ibwt(I, L, context: OptionsDict):
     """inverse Burrows-Wheeler transform"""
     n = len(L)
     X = sorted([(i, x) for i, x in enumerate(L)], key=itemgetter(1))
@@ -135,19 +155,32 @@ def ibwt(I, L):
 
 class open: # capa not required for method context manager styling
     """a context manager."""
-    def __init__(self, f, mode):
+    def __init__(self, f, mode, context: OptionsDict):
         if isinstance(f, str):
             if mode == 'rb' or mode == 'wb':
-                self.file = gzip.open(f, mode)  # base gzip stream
-                self.read = (mode == 'rb')
+                self.reader = (mode == 'rb')
                 self.buffer = BytesIO()    # new buffer
                 self.ended = False
+                self.count = 0
+                self.message = 'Initilizing'
+                defaults = {
+                    'blockSize': pow(2, 24) - 1, # large size
+                    'maxDict': pow(2, 24) - 1, # maximum size
+                    'compresslevel': 9,  # default level
+                    'verbose': True # explain output
+                }
+                if context is not None:
+                    self.context = defaults | context
+                self.file = gzip.open(f, mode, **context)  # base gzip stream
             else:
                 raise ValueError('needs mode rb or wb')
         else:
             raise ValueError('requires a filename')
 
     def __enter__(self):
+        if self.context['verbose']:
+            print()
+            print(self) # set up display line
         return self
 
     def __exit__(self, *args, **kwargs):
@@ -163,10 +196,15 @@ class open: # capa not required for method context manager styling
     def w3(self, num):
         self.file.write(asBytes(num))
 
+    def setMessage(self, message):
+        self.message = message
+        print(self)
+
     def read(self):
-        if not self.read:
+        if not self.reader:
             raise TypeError('file type is wb')
         # process reading
+        self.count += 1
         out = self.buffer.read(1)
         if out == b'':
             # none EOF?
@@ -178,25 +216,29 @@ class open: # capa not required for method context manager styling
             index = self.r3()
             if index >= size:
                 raise ValueError('bad index count')
-            count = [self.r3() for i in range(256)]
 
             buffer = BytesIO()
-            for i in count:
+            for i in range(0, 256):
                 used = self.r3()    # symbols used
-                packet = [self.r3() for j in range(used)]
-                packet = ilzw(packet)
+                packet = [self.file.read(used) for j in range(0, 3)]    # 3 swivel
+                self.setMessage('Unpacking')
+                packet = swivel(packet)     # reverse transform
+                packet = ilzw(packet, self.context)
                 buffer.write(packet)
                 if buffer.tell() > size:
                     ValueError('bad length count')
-            self.buffer = BytesIO(ibwt(index, buffer.getvalue()))
+            self.setMessage('Inverting')
+            self.buffer = BytesIO(ibwt(index, buffer.getvalue(), self.context))
             buffer.close()
             return self.buffer.read(1)
 
     def write(self, data):
-        if self.read:
+        blockSize = self.context['blockSize']
+        if self.reader:
             raise TypeError('file type is rb')
         if isinstance(data, bytes):
             # process writing
+            self.count += 1
             self.buffer.write(data)
             while self.buffer.tell() > blockSize or self.ended:
                 todo = self.buffer.getvalue()
@@ -204,7 +246,8 @@ class open: # capa not required for method context manager styling
                 self.buffer = BytesIO(todo[blockSize:])
                 todo = todo[:blockSize]
                 count = counts[todo]
-                index, trans = bwt(todo)
+                self.setMessage('Transforming')
+                index, trans = bwt(todo, self.context)
                 size = len(todo)
 
                 self.w3(size)
@@ -221,14 +264,26 @@ class open: # capa not required for method context manager styling
                 for i in count:
                     packet = trans[:i]
                     trans = trans[i:]
-                    packet = lzw(packet)
+                    self.setMessage('Packing')
+                    packet = lzw(packet, self.context)
                     self.w3(len(packet))    # store symbols used
+                    packet = swivel(packet) # transform into slow/medium/fast
                     for j in packet:
                         # write each partition
                         self.file.write(j)  # doesn't need binary convert
 
         else:
             raise ValueError('write only writes bytes')
+
+    def readUTF(self):
+        """maybe an archive needs filenames"""
+        length = int.from_bytes(self.read(8), 'big')
+        return self.read(length).decode()
+
+    def writeUTF(self, string):
+        """maybe an archive needs filenames"""
+        self.write(len(string).to_bytes(8, 'big'))
+        self.write(string.encode())
 
     def close(self):
         self.ended = True
@@ -239,9 +294,21 @@ class open: # capa not required for method context manager styling
     def flush(self):
         raise TypeError('inefficiency error by attempt to flush block')
 
-    # TODO: iteration interface, but assume read is dynamic binding
+    def __repr__(self) -> str:
+        """show compression details on same line"""
+        print('\033[1A', end = '\x1b[2K')   # return to previous line
+        message = self.message + ': ' + self.count + '/' + self.file.tell()
+        print(message)
+
     def __iter__(self):
-        return iter(self.file)
+        return self
+
+    def __next__(self):
+        value = self.read()
+        if value != b'':
+            return value
+        else:
+            raise StopIteration
 
 # main
 VERSION = '1.0.0'   # version
