@@ -1,4 +1,4 @@
-# phinka specific python
+# dx specific module
 # vjp -- it's alright
 # the back propergator likely is just an easy f identity
 # as differential of integral of f -> f
@@ -125,3 +125,28 @@ def preScale(f, xmax, magConverge = 0.5):
 def postScale(result, xmax, magConverge = 0.5):
     """rescale x back to full integral domain"""
     return lambda x2: result * xmax / magConverge
+
+
+
+
+# main
+VERSION = '1.0.0'   # version
+HELP = 'dx calculus tool'
+
+import argparse
+
+def resolve(args):
+    """argument action resolver"""
+    return
+
+def main(parser: argparse.ArgumentParser):
+    # adder = parser.add_subparsers(help = 'sub-command')
+    parser.add_argument('--version', action = 'version', version = '%(prog)s ' + VERSION)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description = HELP)
+    parser.set_defaults(func = resolve)
+    main(parser)
+    args = parser.parse_args()
+    args.func(args)

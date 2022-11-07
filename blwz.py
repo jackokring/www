@@ -242,4 +242,25 @@ class open: # capa not required for method context manager styling
     # TODO: iteration interface, but assume read is dynamic binding
     def __iter__(self):
         return iter(self.file)
-        
+
+# main
+VERSION = '1.0.0'   # version
+HELP = 'blwz compression tool'
+
+import argparse
+
+def resolve(args):
+    """argument action resolver"""
+    return
+
+def main(parser: argparse.ArgumentParser):
+    # adder = parser.add_subparsers(help = 'sub-command')
+    parser.add_argument('--version', action = 'version', version = '%(prog)s ' + VERSION)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description = HELP)
+    parser.set_defaults(func = resolve)
+    main(parser)
+    args = parser.parse_args()
+    args.func(args)
