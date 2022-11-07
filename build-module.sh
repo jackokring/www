@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 
+cd ~/www
+
+# clear old dist files
+rm -rf dist/*
+
 # build python module phinka
 python -m build
 
@@ -8,5 +13,4 @@ python -m build
 # Password: <API KEY>
 
 # follow the PyPI $HOME/.pypirc advice
-cd ~/www
 twine upload dist/*
