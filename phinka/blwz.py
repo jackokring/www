@@ -1,6 +1,6 @@
 # BLWZ file compression
 
-from mypytypes import OptionsDict
+from phinka.types import OptionsDict
 
 # use encode/decode('UTF-8') for b' -> '
 

@@ -1,8 +1,4 @@
-#!/usr/bin/python
-# hash bang python script
-
-
-
+# use phinka.sh script
 
 
 
