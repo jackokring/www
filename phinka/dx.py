@@ -130,7 +130,7 @@ def postScale(result, xmax, magConverge = 0.5):
 
 
 # main
-VERSION = '1.0.0'   # version
+VERSION = '1.0.0'   # version of algorithm
 HELP = 'dx calculus tool'
 
 import argparse

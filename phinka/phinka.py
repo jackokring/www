@@ -7,7 +7,7 @@ except:
     __version__ = 'development-alpha-version'
 
 # main
-VERSION = __version__   # main version
+VERSION = __version__   # main version from pyproject.toml
 HELP = 'Phinka tools for data processing'
 
 import argparse
