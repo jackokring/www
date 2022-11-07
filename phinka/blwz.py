@@ -8,6 +8,10 @@ from mypytypes import OptionsDict
 
 import gzip
 
+# hashlib for signatures
+
+import hashlib
+
 # for quick string buffers
 
 from io import BytesIO 
@@ -297,7 +301,14 @@ class open: # capa not required for method context manager styling
     def __repr__(self) -> str:
         """show compression details on same line"""
         print('\033[1A', end = '\x1b[2K')   # return to previous line
-        message = self.message + ': ' + self.count + '/' + self.file.tell()
+        if self.file.tell() == 0:
+            size = 100
+        else:
+            size = self.count / self.file.tell()
+            size *= 100   # percent
+            size = int(size)    # as integer
+
+        message = self.message + ': ' + self.count + '/' + self.file.tell() + ' ' + size + '%'
         print(message)
 
     def __iter__(self):
