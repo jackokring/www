@@ -1,10 +1,13 @@
 # use phinka.sh script
+from importlib.metadata import version
 
-
-
+try:
+    __version__ = version(__package__ or __name__)
+except:
+    __version__ = 'development-alpha-version'
 
 # main
-VERSION = '1.0.0'   # main version
+VERSION = __version__   # main version
 HELP = 'Phinka tools for data processing'
 
 import argparse
