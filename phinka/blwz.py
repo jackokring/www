@@ -156,6 +156,7 @@ def ibwt(I, L, context: OptionsDict):
     return b''.join(S)
 
 # context manager
+import os
 
 class open: # capa not required for method context manager styling
     """a context manager."""
@@ -176,6 +177,10 @@ class open: # capa not required for method context manager styling
                 if context is not None:
                     self.context = defaults | context
                 self.file = gzip.open(f, mode, **context)  # base gzip stream
+                self.digest = hashlib.sha512()  # 64 bytes
+                self.last = 64  # to allow changes easier
+                if self.reader:
+                    self.size = os.stat(f).st_size  # get file size
             else:
                 raise ValueError('needs mode rb or wb')
         else:
@@ -204,18 +209,26 @@ class open: # capa not required for method context manager styling
         self.message = message
         print(self)
 
+    def bufferRead(self):
+        out = self.buffer.read(1)
+        self.digest.update(out)
+        return out
+
     def read(self):
         if not self.reader:
             raise TypeError('file type is wb')
         # process reading
         self.count += 1
-        out = self.buffer.read(1)
+        out = self.bufferRead()
         if out == b'':
             # none EOF?
             self.buffer.close()
             # check EOF?
-            if self.file.peek(1) == b'':
-                return out
+            if self.file.tell() + self.last == self.size:  # EOF
+                if self.file.read(self.last) == self.digest.digest():
+                    return b''  # actual end of file
+            if self.size - self.file.tell() < self.last:   # digest gone
+                raise ValueError('valid digest not present') 
             size = self.r3()
             index = self.r3()
             if index >= size:
@@ -234,7 +247,11 @@ class open: # capa not required for method context manager styling
             self.setMessage('Inverting')
             self.buffer = BytesIO(ibwt(index, buffer.getvalue(), self.context))
             buffer.close()
-            return self.buffer.read(1)
+            return self.bufferRead()
+
+    def bufferWrite(self, data):
+        self.digest.update(data)
+        self.buffer.write(data)
 
     def write(self, data):
         blockSize = self.context['blockSize']
@@ -243,7 +260,7 @@ class open: # capa not required for method context manager styling
         if isinstance(data, bytes):
             # process writing
             self.count += 1
-            self.buffer.write(data)
+            self.bufferWrite(data)
             while self.buffer.tell() > blockSize or self.ended:
                 todo = self.buffer.getvalue()
                 self.buffer.close()
@@ -290,9 +307,10 @@ class open: # capa not required for method context manager styling
         self.write(string.encode())
 
     def close(self):
-        self.ended = True
-        self.write(b'') # write the last
-        self.file.flush()   # flush stream
+        if not self.reader:
+            self.ended = True
+            self.write(b'') # write the last
+            self.file.write(self.digest.digest())
         self.file.close()
 
     def flush(self):

@@ -28,10 +28,8 @@ Browser Python via WASM is provided in `py.html` using a web worker. In a simila
 
 # Various `.py` (in the Module `phinka` perhaps)
 
-The `phinka.sh` script launches `phinka.py` as a module to avoid missing module referencing. Basically `python -m phinka.phinka "$@"` with arguments
+The `phinka.sh` script launches `phinka.py` as a module to avoid missing module referencing. Basically `python -m phinka "$@"` with arguments
 
 `phinka.blwz` - a data-compression format using some of the best and adding in (or technically removing) **self-partition mutual information** (a form of information fission).
 
 `phinka.dx` - calculus tools and other mathemeatical functions.
-
-`phinka.phinka` - a generic command line interface for all the tools. Use `./phinka.sh --version` for example.
