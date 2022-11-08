@@ -179,7 +179,7 @@ class open: # capa not required for method context manager styling
             else:
                 raise ValueError('needs mode rb or wb')
         else:
-            raise ValueError('requires a filename')
+            raise TypeError('requires a filename')
 
     def __enter__(self):
         if self.context['verbose']:
@@ -277,7 +277,7 @@ class open: # capa not required for method context manager styling
                         self.file.write(j)  # doesn't need binary convert
 
         else:
-            raise ValueError('write only writes bytes')
+            raise TypeError('write only writes bytes')
 
     def readUTF(self):
         """maybe an archive needs filenames"""
@@ -296,19 +296,19 @@ class open: # capa not required for method context manager styling
         self.file.close()
 
     def flush(self):
-        raise TypeError('inefficiency error by attempt to flush block')
+        raise TypeError('inefficiency by attempt to flush block')
 
     def __repr__(self) -> str:
         """show compression details on same line"""
         print('\033[1A', end = '\x1b[2K')   # return to previous line
-        if self.file.tell() == 0:
+        if self.file.tell() == 0 or self.count == 0:
             size = 100
         else:
-            size = self.count / self.file.tell()
+            size = self.file.tell() / self.count
             size *= 100   # percent
             size = int(size)    # as integer
 
-        message = self.message + ': ' + self.count + '/' + self.file.tell() + ' ' + size + '%'
+        message = self.message + ': ' + self.file.tell() + '/' + self.count + ' ' + size + '%'
         print(message)
 
     def __iter__(self):
@@ -345,7 +345,7 @@ def resolve(args):
         decompress(args)
     else:
         # no so can't
-        raise ValueError('something wrong with the file names or directories named')
+        raise TypeError('something wrong with the file names or directories named')
 
 def main(parser: argparse.ArgumentParser):
     parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s ' + VERSION)
