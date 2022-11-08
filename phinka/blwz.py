@@ -158,9 +158,9 @@ def ibwt(I, L, context: OptionsDict):
 # context manager
 import os
 
-class open: # capa not required for method context manager styling
+class blwz: # capa not required for method context manager styling
     """a context manager."""
-    def __init__(self, f, mode, context: OptionsDict):
+    def __init__(self, f, mode = 'rb', context: OptionsDict = {}):
         if isinstance(f, str):
             if mode == 'rb' or mode == 'wb':
                 self.reader = (mode == 'rb')
@@ -174,8 +174,7 @@ class open: # capa not required for method context manager styling
                     'compresslevel': 9,  # default level
                     'verbose': True # explain output
                 }
-                if context is not None:
-                    self.context = defaults | context
+                self.context = defaults | context
                 self.file = gzip.open(f, mode, **context)  # base gzip stream
                 self.digest = hashlib.sha512()  # 64 bytes
                 self.last = 64  # to allow changes easier
@@ -214,7 +213,13 @@ class open: # capa not required for method context manager styling
         self.digest.update(out)
         return out
 
-    def read(self):
+    def read(self, count = 1):
+        out = BytesIO()
+        for i in range(0, count):
+            out.write(self.read1())
+        return out.getvalue()   # bytes
+
+    def read1(self):
         if not self.reader:
             raise TypeError('file type is wb')
         # process reading
@@ -340,12 +345,34 @@ class open: # capa not required for method context manager styling
             raise StopIteration
 
 from os.path import isfile, isdir
+import glob
 
 def decompress(args):
-    """"""
+    """decompress a directory structure"""
+    # TODO: context
+    with blwz(args.ARCHIVE, 'rb') as input:
+        file = input.readUTF()
+        size = int.from_bytes(input.read(8), 'big')
+        with open(file, 'wb') as out:
+            for i in range(0, size):
+                out.write(input.read1()) # still inefficient but ...
+        print(size + ': ' + file)
 
 def compress(args):
-    """"""
+    """compress a directory structure"""
+    if isfile(args.ARCHIVE):
+        ValueError('archive already exists')
+    directory = args.compress   # already a directory
+    files = glob.glob(directory + '/**/*', recursive=True)
+    # TODO: context
+    with blwz(args.ARCHIVE, 'wb') as out:
+        for file in files:
+            out.writeUTF(file)
+            size = os.stat(file).st_size
+            out.write(size.to_bytes(8, 'big'))  # 64 bit
+            with open(file, 'rb') as input:
+                out.write(input.read())
+            print(size + ': ' + file)
 
 # main
 VERSION = '1.0.0'   # version of codec
