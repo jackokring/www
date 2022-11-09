@@ -27,17 +27,23 @@ HELP = 'Phinka tools for data processing'
 
 import argparse
 import phinka.blwz as blwz
+from phinka.types import OptionsDict
 
 # utility import for with statement ease of use
 class open(blwz.blwz):
     # extend to get phinka.open
-    pass
+    def __init__(self, f, mode = 'rb', context: OptionsDict = {}):
+        super().__init__(self, f, mode, context)
 
 import phinka.dx as dx
 
 def resolve(args):
     """argument action resolver"""
     raise TypeError('you must supply a sub-command')
+
+def test(args):
+    """test phinka"""
+    return
 
 def main(parser: argparse.ArgumentParser):
     parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s ' + VERSION)
@@ -53,6 +59,10 @@ def main(parser: argparse.ArgumentParser):
     parser = adder.add_parser('dx', help = dx.HELP)
     parser.set_defaults(func = dx.resolve)
     dx.main(parser)
+
+    # test - no argumenets
+    parser = adder.add_parser('test', help = 'run tests')
+    parser.set_defaults(func = test)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

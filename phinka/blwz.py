@@ -18,12 +18,6 @@ from io import BytesIO
 
 # LZW compression (add mods for inverting key bias)
 
-def inverted(size, entry):
-    """use inverted symbols on all but first entry"""
-    return size - entry # allow zero as dictionary extension in transit
-    # more closely matches zero being repeats
-    # and high information numbers being individual small symbols
-
 def asBytes(number):
     return number.to_bytes(3, 'big')
 
@@ -40,6 +34,11 @@ def lzw(uncompressed, context):
     dictionary = {chr(i): i for i in range(dictSize)}
     maxDict = context['maxDict']
 
+    def inverted(entry):
+        return dictSize - entry - 1 # allow zero as dictionary extension in transit
+        # more closely matches zero being repeats
+        # and high information numbers being individual small symbols
+
     first = True
     w = b''
     result = []
@@ -50,7 +49,7 @@ def lzw(uncompressed, context):
         else:
             out = dictionary[w]
             if not first:
-                out = inverted(dictSize, out) # output inverted pointer for more zeros => redundancy
+                out = inverted(out) # output inverted pointer for more zeros => redundancy
             else:
                 first = False
             result.append(asBytes(out))
@@ -62,7 +61,7 @@ def lzw(uncompressed, context):
 
     # Output the code for w for final symbol
     if w:
-        result.append(asBytes(inverted(dictSize, dictionary[w])))
+        result.append(asBytes(inverted(dictionary[w])))
     return result
 
 def ilzw(compressed, context):
@@ -72,6 +71,11 @@ def ilzw(compressed, context):
     dictSize = 256
     dictionary = {i: i.to_bytes(1) for i in range(dictSize)}
     maxDict = context['maxDict']
+
+    def inverted(entry):
+        return dictSize - entry # allow zero as dictionary extension in transit
+        # more closely matches zero being repeats
+        # and high information numbers being individual small symbols
 
     if len(compressed) == 0:
         return b''  # null compressed
@@ -85,10 +89,10 @@ def ilzw(compressed, context):
     w = first.to_bytes(1)  # not inverted exception
     result.write(w)
     for k in compressed:
-        j = asNumber(inverted(dictSize, k)) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
+        j = asNumber(inverted(k)) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
         if j in dictionary:
             entry = dictionary[j]
-        elif j == 0:
+        elif j == dictSize:
             entry = w + w[0]
         else:
             raise ValueError('bad symbol')
@@ -206,7 +210,8 @@ class blwz: # capa not required for method context manager styling
 
     def setMessage(self, message):
         self.message = message
-        print(self)
+        if self.context['verbose']:
+            print(self)
 
     def bufferRead(self):
         out = self.buffer.read(1)
@@ -398,6 +403,7 @@ def main(parser: argparse.ArgumentParser):
     parser.add_argument('-b', '--best', action = 'store_true', help = 'best compression')
     parser.add_argument('-l', '--level', help = 'compression level', type = int, choices = range(0, 10))
     parser.add_argument('-c', '--compress', help = 'compress directory')
+    parser.add_argument('-p', '--print', action = 'store_true', help = 'print running status')
     parser.add_argument('ARCHIVE', help = 'archive file name')
 
 if __name__ == '__main__':
