@@ -182,7 +182,6 @@ class blwz: # capa not required for method context manager styling
                 self.context = defaults | context
                 self.file = gzip.open(f, mode, **context)  # base gzip stream
                 self.digest = hashlib.sha512()  # 64 bytes
-                self.last = 64  # to allow changes easier
                 if self.reader:
                     self.size = os.stat(f).st_size  # get file size
             else:
@@ -313,15 +312,17 @@ class blwz: # capa not required for method context manager styling
         self.write(string.encode())
 
     def close(self):
+        digest = self.digest.digest()
         if not self.reader:
             self.ended = True
             self.write(b'') # write the last
-            self.file.write(self.digest.digest())
+            self.file.write(len(digest).to_bytes(3, 'big'))
+            self.file.write(digest)
         else:
-            digest = self.file.read(self.last)
+            digestFile = self.file.read(int.from_bytes(self.file.read(3), 'big'))
             if self.file.tell() != self.size:
                 ValueError('file length inncorrect')
-            if self.digest.digest() != digest:
+            if digestFile != digest:
                 ValueError('bad digest checksum')
         self.file.close()
 
