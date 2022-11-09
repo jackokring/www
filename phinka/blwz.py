@@ -18,15 +18,15 @@ from io import BytesIO
 
 # LZW compression (add mods for inverting key bias)
 
-def asBytes(number):
-    return number.to_bytes(3, 'big')
+def asBytes(number, n):
+    return number.to_bytes(n, 'big')
 
-def asNumber(bytes):
-    if len(bytes) != 3:
+def asNumber(bytes, n):
+    if len(bytes) != n:
         raise ValueError('dictionary pointers limited to 3 bytes')
     return int.from_bytes(bytes, 'big')
 
-def lzw(uncompressed, context):
+def lzw(uncompressed, context: OptionsDict = {}):
     """Compress a string to a list of output symbols."""
 
     # Build the dictionary.
@@ -52,7 +52,7 @@ def lzw(uncompressed, context):
                 out = inverted(out) # output inverted pointer for more zeros => redundancy
             else:
                 first = False
-            result.append(asBytes(out))
+            result.append(asBytes(out), 3)
             # Add wc to the dictionary.
             dictionary[wc] = dictSize
             if dictSize < maxDict:
@@ -61,10 +61,10 @@ def lzw(uncompressed, context):
 
     # Output the code for w for final symbol
     if w:
-        result.append(asBytes(inverted(dictionary[w])))
+        result.append(asBytes(inverted(dictionary[w]), 3))
     return result
 
-def ilzw(compressed, context):
+def ilzw(compressed, context: OptionsDict = {}):
     """Decompress a list of output ks to a string."""
 
     # Build the dictionary.
@@ -83,13 +83,13 @@ def ilzw(compressed, context):
     # use BytesIO, otherwise this becomes O(N^2)
     # due to string concatenation in a loop
     result = BytesIO()
-    first = asNumber(compressed.pop(0))
+    first = asNumber(compressed.pop(0), 3)
     if first > 255:
         raise ValueError('bad first symbol')
     w = first.to_bytes(1)  # not inverted exception
     result.write(w)
     for k in compressed:
-        j = asNumber(inverted(k)) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
+        j = asNumber(inverted(k), 3) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
         if j in dictionary:
             entry = dictionary[j]
         elif j == dictSize:
@@ -131,7 +131,7 @@ def counts(s):
         T[s[i]] += 1    # add a char
     return T
 
-def bwt(s, context: OptionsDict):
+def bwt(s, context: OptionsDict = {}):
     """Burrows-Wheeler transform"""
     n = len(s)
     m = sorted([s[i:n] + s[0:i] for i in range(n)])
@@ -141,7 +141,7 @@ def bwt(s, context: OptionsDict):
 
 from operator import itemgetter
 
-def ibwt(I, L, context: OptionsDict):
+def ibwt(I, L, context: OptionsDict = {}):
     """inverse Burrows-Wheeler transform"""
     n = len(L)
     X = sorted([(i, x) for i, x in enumerate(L)], key=itemgetter(1))
@@ -162,6 +162,7 @@ def ibwt(I, L, context: OptionsDict):
 # context manager
 import os
 
+# use phinka.open class as it proxies the constructor
 class blwz: # capa not required for method context manager styling
     """a context manager."""
     def __init__(self, f, mode = 'rb', context: OptionsDict = {}):
@@ -202,18 +203,18 @@ class blwz: # capa not required for method context manager styling
     def __getattr__(self, attr):
         return getattr(self.file, attr)
 
-    def r3(self):
-        return asNumber(self.read(3))
+    def r3(self, n):
+        return asNumber(self.read(n), n)
 
-    def w3(self, num):
-        self.file.write(asBytes(num))
+    def w3(self, num, n):
+        self.file.write(asBytes(num, n))
 
     def setMessage(self, message):
         self.message = message
         if self.context['verbose']:
             print(self)
 
-    def bufferRead(self):
+    def digestRead(self):
         out = self.buffer.read(1)
         self.digest.update(out)
         return out
@@ -229,24 +230,19 @@ class blwz: # capa not required for method context manager styling
             raise TypeError('file type is wb')
         # process reading
         self.count += 1
-        out = self.bufferRead()
+        out = self.digestRead()
         if out == b'':
             # none EOF?
             self.buffer.close()
-            # check EOF?
-            if self.file.tell() + self.last == self.size:  # EOF
-                if self.file.read(self.last) == self.digest.digest():
-                    return b''  # actual end of file
-            if self.size - self.file.tell() < self.last:   # digest gone
-                raise ValueError('valid digest not present') 
-            size = self.r3()
-            index = self.r3()
+            # check EOF? No as expected check on close
+            size = self.r3(3)
+            index = self.r3(3)
             if index >= size:
                 raise ValueError('bad index count')
 
             buffer = BytesIO()
             for i in range(0, 256):
-                used = self.r3()    # symbols used
+                used = self.r3(3)    # symbols used
                 packet = [self.file.read(used) for j in range(0, 3)]    # 3 swivel
                 self.setMessage('Unpacking')
                 packet = swivel(packet)     # reverse transform
@@ -257,9 +253,9 @@ class blwz: # capa not required for method context manager styling
             self.setMessage('Inverting')
             self.buffer = BytesIO(ibwt(index, buffer.getvalue(), self.context))
             buffer.close()
-            return self.bufferRead()
+            return self.digestRead()
 
-    def bufferWrite(self, data):
+    def digestWrite(self, data):
         self.digest.update(data)
         self.buffer.write(data)
 
@@ -270,7 +266,7 @@ class blwz: # capa not required for method context manager styling
         if isinstance(data, bytes):
             # process writing
             self.count += 1
-            self.bufferWrite(data)
+            self.digestWrite(data)
             while self.buffer.tell() > blockSize or self.ended:
                 todo = self.buffer.getvalue()
                 self.buffer.close()
@@ -281,10 +277,10 @@ class blwz: # capa not required for method context manager styling
                 index, trans = bwt(todo, self.context)
                 size = len(todo)
 
-                self.w3(size)
+                self.w3(size, 3)
 
                 # BWT index
-                self.w3(index)
+                self.w3(index, 3)
                 # counts of partition
                 # information fission by self-partition mutual information redundancy
                 # elimination and is much more efficient than prime factorization
@@ -297,7 +293,7 @@ class blwz: # capa not required for method context manager styling
                     trans = trans[i:]
                     self.setMessage('Packing')
                     packet = lzw(packet, self.context)
-                    self.w3(len(packet))    # store symbols used
+                    self.w3(len(packet), 3)    # store symbols used
                     packet = swivel(packet) # transform into slow/medium/fast
                     for j in packet:
                         # write each partition
@@ -321,6 +317,12 @@ class blwz: # capa not required for method context manager styling
             self.ended = True
             self.write(b'') # write the last
             self.file.write(self.digest.digest())
+        else:
+            digest = self.file.read(self.last)
+            if self.file.tell() != self.size:
+                ValueError('file length inncorrect')
+            if self.digest.digest() != digest:
+                ValueError('bad digest checksum')
         self.file.close()
 
     def flush(self):
@@ -352,16 +354,19 @@ class blwz: # capa not required for method context manager styling
 from os.path import isfile, isdir
 import glob
 
+
+
 def decompress(args):
     """decompress a directory structure"""
     # TODO: context
     with blwz(args.ARCHIVE, 'rb') as input:
-        file = input.readUTF()
-        size = int.from_bytes(input.read(8), 'big')
-        with open(file, 'wb') as out:
-            for i in range(0, size):
-                out.write(input.read1()) # still inefficient but ...
-        print(size + ': ' + file)
+        count = int.from_bytes(input.read(8), 'big')
+        for f in range(0, count):
+            file = input.readUTF()
+            size = int.from_bytes(input.read(8), 'big')
+            with open(file, 'wb') as out:
+                out.write(input.read(size)) # still inefficient but ...
+            print(size + ': ' + file)
 
 def compress(args):
     """compress a directory structure"""
@@ -371,12 +376,13 @@ def compress(args):
     files = glob.glob(directory + '/**/*', recursive=True)
     # TODO: context
     with blwz(args.ARCHIVE, 'wb') as out:
+        out.write(len(files).to_bytes(8, 'big'))
         for file in files:
             out.writeUTF(file)
             size = os.stat(file).st_size
             out.write(size.to_bytes(8, 'big'))  # 64 bit
             with open(file, 'rb') as input:
-                out.write(input.read())
+                out.write(input.read(size))
             print(size + ': ' + file)
 
 # main
