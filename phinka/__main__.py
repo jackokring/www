@@ -13,13 +13,13 @@ import sys
 
 debug = False
 
-def exception_handler(exception_type, exception, traceback):
+def exceptionHandler(exception_type, exception, traceback):
     if debug:
         sys.__excepthook__(exception_type, exception, traceback)
     else:
         print('%s: %s' % (exception_type.__name__, exception))
 
-sys.excepthook = exception_handler
+sys.excepthook = exceptionHandler
 
 # main
 VERSION = __version__   # main version from pyproject.toml
@@ -27,6 +27,12 @@ HELP = 'Phinka tools for data processing'
 
 import argparse
 import phinka.blwz as blwz
+
+# utility import for with statement ease of use
+class open(blwz.blwz):
+    # extend to get phinka.open
+    pass
+
 import phinka.dx as dx
 
 def resolve(args):
@@ -52,7 +58,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog = 'python -m phinka',
         description = HELP,
-        epilog = 'Thanks.\nThe Management.')
+        epilog = 'You can request help on each subcommand.\n\nThanks.\nThe Management.')
     parser.set_defaults(func = resolve)
     main(parser)
     args = parser.parse_args()

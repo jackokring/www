@@ -1,5 +1,7 @@
 # Phinka tools for data processing
 
-Launch by `python -m phinka` with `python-is-python3` installed for example.
+Launch by `python -m phinka` with `python-is-python3` installed. Help is available with the `--help` option.
 
-`blwz` a data compression tool.
+## `blwz`
+
+A data compression tool.
