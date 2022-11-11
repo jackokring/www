@@ -92,15 +92,16 @@ def ilzw(compressed, context: OptionsDict = {}):
         j = asNumber(inverted(k), 3) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
         if j in dictionary:
             entry = dictionary[j]
-        elif j == dictSize:
+        elif j == dictSize: # auto-gen
             entry = w + w[0]
         else:
             raise ValueError('bad symbol')
         result.write(entry)
 
         # Add w+entry[0] to the dictionary.
-        dictionary[dictSize] = w + entry[0]
-        if dictSize < maxDict - 1:  # inverse always follows a symbol behind
+        if dictSize < maxDict - 1:  # avoid setting last for inverted(0) auto gen
+            dictionary[dictSize] = w + entry[0]
+            # inverse always follows a symbol behind
             dictSize += 1
 
         w = entry
