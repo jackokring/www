@@ -54,8 +54,8 @@ def lzw(uncompressed, context: OptionsDict = {}):
                 first = False
             result.append(asBytes(out), 3)
             # Add wc to the dictionary.
-            dictionary[wc] = dictSize
             if dictSize < maxDict:
+                dictionary[wc] = dictSize   # avoid overwrite of last entry to prevent growth cascade
                 dictSize += 1
             w = c
 
@@ -134,6 +134,7 @@ def counts(s):
 
 def bwt(s, context: OptionsDict = {}):
     """Burrows-Wheeler transform"""
+    # TODO: make more efficient radix sort
     n = len(s)
     m = sorted([s[i:n] + s[0:i] for i in range(n)])
     I = m.index(s)
@@ -203,11 +204,19 @@ class blwz: # capa not required for method context manager styling
     def __getattr__(self, attr):
         return getattr(self.file, attr)
 
+    # raw integer read and write
     def r3(self, n):
-        return asNumber(self.read(n), n)
+        return asNumber(self.file.read(n), n)
 
     def w3(self, num, n):
         self.file.write(asBytes(num, n))
+
+    # on stream read and write integer
+    def r3Atop(self, n):
+        return asNumber(self.read(n), n)
+
+    def w3Atop(self, num, n):
+        self.write(asBytes(num, n))
 
     def setMessage(self, message):
         self.message = message
@@ -253,7 +262,8 @@ class blwz: # capa not required for method context manager styling
             self.setMessage('Inverting')
             self.buffer = BytesIO(ibwt(index, buffer.getvalue(), self.context))
             buffer.close()
-            return self.digestRead()
+            out = self.digestRead()
+        return out
 
     def digestWrite(self, data):
         self.digest.update(data)
@@ -304,12 +314,12 @@ class blwz: # capa not required for method context manager styling
 
     def readUTF(self):
         """maybe an archive needs filenames"""
-        length = int.from_bytes(self.read(8), 'big')
+        length = self.r3Atop(8)
         return self.read(length).decode()
 
     def writeUTF(self, string):
         """maybe an archive needs filenames"""
-        self.write(len(string).to_bytes(8, 'big'))
+        self.w3Atop(len(string), 8)
         self.write(string.encode())
 
     def close(self):
@@ -317,14 +327,18 @@ class blwz: # capa not required for method context manager styling
         if not self.reader:
             self.ended = True
             self.write(b'') # write the last
-            self.file.write(len(digest).to_bytes(3, 'big'))
+            self.w3(0, 1)   # version tag
+            self.w3(len(digest), 3)
             self.file.write(digest)
         else:
-            digestFile = self.file.read(int.from_bytes(self.file.read(3), 'big'))
-            if self.file.tell() != self.size:
-                ValueError('file length inncorrect')
-            if digestFile != digest:
-                ValueError('bad digest checksum')
+            if self.r3(1) == 0:
+                digestFile = self.file.read(self.r3(3))
+                if self.file.tell() != self.size:
+                    ValueError('file length inncorrect')
+                if digestFile != digest:
+                    ValueError('bad digest checksum')
+            else:
+                ValueError('unsupported digest version')
         self.file.close()
 
     def flush(self):
@@ -356,33 +370,36 @@ class blwz: # capa not required for method context manager styling
 from os.path import isfile, isdir
 import glob
 
-
-
 def decompress(args):
     """decompress a directory structure"""
     # TODO: context
     with blwz(args.ARCHIVE, 'rb') as input:
-        count = int.from_bytes(input.read(8), 'big')
+        count = input.r3Atop(8)
         for f in range(0, count):
             file = input.readUTF()
-            size = int.from_bytes(input.read(8), 'big')
+            size = input.r3Atop(8)
             with open(file, 'wb') as out:
                 out.write(input.read(size)) # still inefficient but ...
             print(size + ': ' + file)
 
 def compress(args):
     """compress a directory structure"""
+    # TODO: context
     if isfile(args.ARCHIVE):
         ValueError('archive already exists')
     directory = args.compress   # already a directory
+    if directory[-1] == '/':
+        directory = directory[0:-1] # remove slash
     files = glob.glob(directory + '/**/*', recursive=True)
     # TODO: context
     with blwz(args.ARCHIVE, 'wb') as out:
-        out.write(len(files).to_bytes(8, 'big'))
+        out.w3Atop(len(files), 8)
         for file in files:
+            if file[0] == '/':  # root not allowed
+                file = file[1:] # make local
             out.writeUTF(file)
             size = os.stat(file).st_size
-            out.write(size.to_bytes(8, 'big'))  # 64 bit
+            out.w3Atop(size, 8)  # 64 bit
             with open(file, 'rb') as input:
                 out.write(input.read(size))
             print(size + ': ' + file)
