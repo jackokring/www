@@ -100,7 +100,7 @@ def ilzw(compressed, context: OptionsDict = {}):
 
         # Add w+entry[0] to the dictionary.
         dictionary[dictSize] = w + entry[0]
-        if dictSize < maxDict:
+        if dictSize < maxDict - 1:  # inverse always follows a symbol behind
             dictSize += 1
 
         w = entry
