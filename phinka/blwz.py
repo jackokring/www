@@ -370,10 +370,21 @@ class blwz: # capa not required for method context manager styling
 from os.path import isfile, isdir
 import glob
 
+def makeContext(args):
+    context = {}
+    if args.quiet:
+        context['verbose'] = False  # quiet
+    if args.fast:
+        context['compresslevel'] = 0
+    if args.best:
+        context['compresslevel'] = 9
+    if args.level:
+        context['compresslevel'] = args.level
+    return context
+
 def decompress(args):
     """decompress a directory structure"""
-    # TODO: context
-    with blwz(args.ARCHIVE, 'rb') as input:
+    with blwz(args.ARCHIVE, 'rb', makeContext(args)) as input:
         count = input.r3Atop(8)
         for f in range(0, count):
             file = input.readUTF()
@@ -391,12 +402,11 @@ def compress(args):
     if directory[-1] == '/':
         directory = directory[0:-1] # remove slash
     files = glob.glob(directory + '/**/*', recursive=True)
-    # TODO: context
-    with blwz(args.ARCHIVE, 'wb') as out:
+    with blwz(args.ARCHIVE, 'wb', makeContext(args)) as out:
         out.w3Atop(len(files), 8)
         for file in files:
-            if file[0] == '/':  # root not allowed
-                file = file[1:] # make local
+            prefix = len(directory) + 1
+            file = file[prefix:] # make local
             out.writeUTF(file)
             size = os.stat(file).st_size
             out.w3Atop(size, 8)  # 64 bit
@@ -428,7 +438,7 @@ def main(parser: argparse.ArgumentParser):
     parser.add_argument('-b', '--best', action = 'store_true', help = 'best compression')
     parser.add_argument('-l', '--level', help = 'compression level', type = int, choices = range(0, 10))
     parser.add_argument('-c', '--compress', help = 'compress directory')
-    parser.add_argument('-p', '--print', action = 'store_true', help = 'print running status')
+    parser.add_argument('-q', '--quiet', action = 'store_true', help = 'no print of running status')
     parser.add_argument('ARCHIVE', help = 'archive file name')
 
 if __name__ == '__main__':
