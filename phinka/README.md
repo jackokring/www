@@ -14,4 +14,7 @@ Making the LZW index down from the last dictionary entry as zero, makes more zer
 
 It is thus an experiment in information "fission" in the partion of information blocks to test the limits of the Landau information mass energy equivalence with the "evaporated radiation" information being mutual and hence not stored with the remaining information "mass" pattern.
 
-The "evapourate" is inferred at decompression as it has to have a necessary form to refuse the block to the required form is nthe hypothesis.
+The "evapourate" is inferred at decompression as it has to have a necessary form to refuse the block to the required form is the hypothesis. Either it then further implies a fusion form exists or it doesn't.
+
+Thanks
+The Management
