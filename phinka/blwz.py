@@ -168,16 +168,16 @@ def bwt(s, context: OptionsDict = {}):
     # m = sorted([s[i:n] + s[0:i] for i in range(n)])
     m = radixSort(range(n), partial(bwKey, d))
     I = 0
-    for i in m:
-        match = True
-        for j in range(n):
-            if s[j] != bwKey(d, i, j):
-                match = False
-                break
-        if match:
-            break   # I right
-        I += 1
-    # I = m.index(s)
+    #for i in m:
+    #    match = True
+    #    for j in range(n):
+    #        if s[j] != bwKey(d, i, j):
+    #            match = False
+    #            break
+    #    if match:
+    #        break   # I right
+    #    I += 1
+    I = m.index(0)
     L = b''.join(d[q - 1] for q in m)
     return (I, L)
 
