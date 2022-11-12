@@ -204,6 +204,13 @@ def ibwt(I, L, context: OptionsDict = {}):
 # context manager
 import os
 
+VERSIONS = ['1.0.0']    # index for code
+SIGN_VERSIONS = ['1.0.0']  # index for code
+
+# alter for updates to algorithms
+VERSION_INDEX = 0
+SIGN_INDEX = 0
+
 # use phinka.open class as it proxies the constructor
 class blwz: # capa not required for method context manager styling
     """a context manager."""
@@ -219,13 +226,25 @@ class blwz: # capa not required for method context manager styling
                     'blockSize': pow(2, 24) - 1, # large size
                     'maxDict': pow(2, 24) - 1, # maximum size
                     'compresslevel': 9,  # default level
-                    'verbose': True # explain output
+                    'verbose': True, # explain output
+                    'gzip': True
                 }
                 self.context = defaults | context
-                self.file = gzip.open(f, mode, **context)  # base gzip stream
+                if self.context['gzip']:
+                    self.file = gzip.open(f, mode, **context)  # base gzip stream
+                else:
+                    self.file = open(f, mode, **context)  # base raw stream
+                # TODO: sign versions
                 self.digest = hashlib.sha512()  # 64 bytes
                 if self.reader:
                     self.size = os.stat(f).st_size  # get file size
+                    version = self.r3(1)
+                    if version <= VERSION_INDEX:
+                        self.maybePrint('archive version ' + VERSIONS[version])
+                    else:
+                        ValueError('unsupported archive version')
+                else:
+                    self.w3(VERSION_INDEX, 1)
             else:
                 raise ValueError('needs mode rb or wb')
         else:
@@ -258,15 +277,15 @@ class blwz: # capa not required for method context manager styling
     def w3Atop(self, num, n):
         self.write(asBytes(num, n))
 
-    def maybePrint(self, newline = False):
+    def maybePrint(self, what, newline = False):
         if self.context['verbose']:
-            print(self)
+            print(what)
             if newline:
                 print()
 
     def setMessage(self, message):
         self.message = message
-        self.maybePrint()
+        self.maybePrint(self)
 
     def digestRead(self):
         out = self.buffer.read(1)
@@ -372,11 +391,13 @@ class blwz: # capa not required for method context manager styling
         if not self.reader:
             self.ended = True
             self.write(b'') # write the last
-            self.w3(0, 1)   # version tag
+            self.w3(SIGN_INDEX, 1)   # version tag
             self.w3(len(digest), 3)
             self.file.write(digest)
         else:
-            if self.r3(1) == 0:
+            version = self.r3(1)
+            if version <= SIGN_INDEX:
+                self.maybePrint('signature digest version ' + SIGN_VERSIONS[version])
                 digestFile = self.file.read(self.r3(3))
                 if self.file.tell() != self.size:
                     ValueError('file length inncorrect')
@@ -426,6 +447,8 @@ def makeContext(args):
         context['compresslevel'] = 9
     if args.level:
         context['compresslevel'] = args.level
+    if args.raw:
+        context['gzip'] = False
     return context
 
 def decompress(args):
@@ -463,7 +486,7 @@ def compress(args):
             out.setMessage('Compressed to')
 
 # main
-VERSION = '1.0.0'   # version of codec
+VERSION = VERSIONS[VERSION_INDEX]   # version of codec
 HELP = 'blwz compression tool'
 
 import argparse
@@ -487,6 +510,7 @@ def main(parser: argparse.ArgumentParser):
     parser.add_argument('-l', '--level', help = 'compression level', type = int, choices = range(0, 10))
     parser.add_argument('-c', '--compress', help = 'compress directory')
     parser.add_argument('-q', '--quiet', action = 'store_true', help = 'no print of running status')
+    parser.add_argument('-r', '--raw', action = 'store_true', help = 'don\'t gzip after')
     parser.add_argument('ARCHIVE', help = 'archive file name')
 
 if __name__ == '__main__':
