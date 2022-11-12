@@ -186,7 +186,7 @@ from operator import itemgetter
 def ibwt(I, L, context: OptionsDict = {}):
     """inverse Burrows-Wheeler transform"""
     n = len(L)
-    X = sorted([(i, x) for i, x in enumerate(L)], key=itemgetter(1))
+    X = sorted([(i, x) for i, x in enumerate(L)], key = itemgetter(1))
 
     T = [None for i in range(n)]
     for i, y in enumerate(X):
