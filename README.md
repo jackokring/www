@@ -26,9 +26,9 @@ A markdown load template loads the HTML template and requests a `/static/md` pre
 
 Browser Python via WASM is provided in `py.html` using a web worker. In a similar way to markdown `/static/py` with an appended `.py` is used to load code.
 
-# Various `.py` (in the Module `phinka` perhaps)
+# Phinka
 
-The `phinka.sh` script launches `phinka.py` as a module to avoid missing module referencing. Basically `python -m phinka "$@"` with arguments
+The `phinka.sh` script launches as a module to avoid missing module references. Basically `python -m phinka "$@"` with arguments. It's also available via `pip install phinka` if you don't need the web server code. [Available on PyPI](https://pypi.org/project/phinka/).
 
 `phinka.blwz` - a data-compression format using some of the best and adding in (or technically removing) **self-partition mutual information** (a form of information fission).
 
