@@ -392,8 +392,9 @@ class blwz: # capa not required for method context manager styling
         else:
             size = self.file.tell() / self.count
             size *= 100   # percent
-            size = int(size)    # as integer
-
+        if self.reader:
+            size = 10000 / size # as expansion
+        size = int(size)    # as integer
         message = self.message + ': ' + self.file.tell() + '/' + self.count + ' ' + size + '%'
         print(message)
 
@@ -431,7 +432,8 @@ def decompress(args):
             size = input.r3Atop(8)
             with open(file, 'wb') as out:
                 out.write(input.read(size)) # still inefficient but ...
-            print(size + ': ' + file)
+            input.setMessage('Expanded')
+            print(file)
 
 def compress(args):
     """compress a directory structure"""
@@ -452,7 +454,8 @@ def compress(args):
             out.w3Atop(size, 8)  # 64 bit
             with open(file, 'rb') as input:
                 out.write(input.read(size))
-            print(size + ': ' + file)
+            out.setMessage('Compressed')
+            print(file)
 
 # main
 VERSION = '1.0.0'   # version of codec
