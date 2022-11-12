@@ -71,6 +71,8 @@ def ilzw(compressed, context: OptionsDict = {}):
     dictSize = 256
     dictionary = {i: i.to_bytes(1) for i in range(dictSize)}
     maxDict = context['maxDict']
+    closed = False
+    last = b''
 
     def inverted(entry):
         return dictSize - entry # allow zero as dictionary extension in transit
@@ -93,7 +95,11 @@ def ilzw(compressed, context: OptionsDict = {}):
         if j in dictionary:
             entry = dictionary[j]
         elif j == dictSize: # auto-gen
-            entry = w + w[0]
+            if not closed:
+                entry = w + w[0]
+            else:
+                # persist last dictionary entry
+                entry = last
         else:
             raise ValueError('bad symbol')
         result.write(entry)
@@ -103,6 +109,10 @@ def ilzw(compressed, context: OptionsDict = {}):
             dictionary[dictSize] = w + entry[0]
             # inverse always follows a symbol behind
             dictSize += 1
+        else:
+            if not closed:
+                last = w + entry[0]
+            closed = True
 
         w = entry
     return result.getvalue()
