@@ -142,13 +142,43 @@ def counts(s):
         T[s[i]] += 1    # add a char
     return T
 
+def radixSort(values, key, step=0):
+    if len(values) < 2:
+        for value in values:
+            yield value
+        return
+
+    bins = {}
+    for value in values:
+        bins.setdefault(key(value, step), []).append(value)
+
+    for k in sorted(bins.keys()):
+        for r in radixSort(bins[k], key, step + 1):
+            yield r
+
+def bwKey(text, value, step):
+    return text[(value + step)] # % len(text)]
+
+from functools import partial
+
 def bwt(s, context: OptionsDict = {}):
     """Burrows-Wheeler transform"""
-    # TODO: make more efficient radix sort
     n = len(s)
-    m = sorted([s[i:n] + s[0:i] for i in range(n)])
-    I = m.index(s)
-    L = b''.join([q[-1] for q in m])
+    d = s + s
+    # m = sorted([s[i:n] + s[0:i] for i in range(n)])
+    m = radixSort(range(n), partial(bwKey, d))
+    I = 0
+    for i in m:
+        match = True
+        for j in range(n):
+            if s[j] != bwKey(d, i, j):
+                match = False
+                break
+        if match:
+            break   # I right
+        I += 1
+    # I = m.index(s)
+    L = b''.join(d[q - 1] for q in m)
     return (I, L)
 
 from operator import itemgetter
