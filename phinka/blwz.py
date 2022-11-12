@@ -233,7 +233,7 @@ class blwz: # capa not required for method context manager styling
                 if self.context['gzip']:
                     self.file = gzip.open(f, mode, **context)  # base gzip stream
                 else:
-                    self.file = open(f, mode, **context)  # base raw stream
+                    self.file = open(f, mode)  # base raw stream
                 # TODO: sign versions
                 self.digest = hashlib.sha512()  # 64 bytes
                 if self.reader:
