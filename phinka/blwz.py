@@ -31,7 +31,7 @@ def lzw(uncompressed, context: OptionsDict = {}):
 
     # Build the dictionary.
     dictSize = 256
-    dictionary = {chr(i): i for i in range(dictSize)}
+    dictionary = {asBytes(i, 1): i for i in range(dictSize)}
     maxDict = context['maxDict']
 
     def inverted(entry):
@@ -69,7 +69,7 @@ def ilzw(compressed, context: OptionsDict = {}):
 
     # Build the dictionary.
     dictSize = 256
-    dictionary = {i: i.to_bytes(1) for i in range(dictSize)}
+    dictionary = {i: asBytes(i, 1) for i in range(dictSize)}
     maxDict = context['maxDict']
     closed = False
     last = b''
@@ -88,10 +88,10 @@ def ilzw(compressed, context: OptionsDict = {}):
     first = asNumber(compressed.pop(0), 3)
     if first > 255:
         raise ValueError('bad first symbol')
-    w = first.to_bytes(1)  # not inverted exception
+    w = asBytes(first, 1)  # not inverted exception
     result.write(w)
     for k in compressed:
-        j = asNumber(inverted(k), 3) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
+        j = inverted(asNumber(k, 3)) # eg 256 -> 0, 255 -> 1, 254 -> 2, ..., 0 -> 256 at start
         if j in dictionary:
             entry = dictionary[j]
         elif j == dictSize: # auto-gen
