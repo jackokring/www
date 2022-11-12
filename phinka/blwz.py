@@ -258,10 +258,15 @@ class blwz: # capa not required for method context manager styling
     def w3Atop(self, num, n):
         self.write(asBytes(num, n))
 
-    def setMessage(self, message):
-        self.message = message
+    def maybePrint(self, newline = False):
         if self.context['verbose']:
             print(self)
+            if newline:
+                print()
+
+    def setMessage(self, message):
+        self.message = message
+        self.maybePrint()
 
     def digestRead(self):
         out = self.buffer.read(1)
@@ -430,10 +435,10 @@ def decompress(args):
         for f in range(0, count):
             file = input.readUTF()
             size = input.r3Atop(8)
+            input.maybePrint(file, True)
             with open(file, 'wb') as out:
                 out.write(input.read(size)) # still inefficient but ...
-            input.setMessage('Expanded')
-            print(file)
+            input.setMessage('Expanded to')
 
 def compress(args):
     """compress a directory structure"""
@@ -452,10 +457,10 @@ def compress(args):
             out.writeUTF(file)
             size = os.stat(file).st_size
             out.w3Atop(size, 8)  # 64 bit
+            out.maybePrint(file, True)
             with open(file, 'rb') as input:
                 out.write(input.read(size))
-            out.setMessage('Compressed')
-            print(file)
+            out.setMessage('Compressed to')
 
 # main
 VERSION = '1.0.0'   # version of codec
