@@ -9,6 +9,8 @@ cd ~/www
 source venv/bin/activate
 
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
+# seems /usr/bin/pip goes for ~/.local installing
+ln -s venv/bin/pip3 venv/bin/pip
 
 # update pip
 pip install --upgrade pip
