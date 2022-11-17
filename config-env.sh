@@ -8,6 +8,8 @@ cd ~/www
 # activate virtual environment
 source venv/bin/activate
 
+# N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
+
 # update pip
 pip install --upgrade pip
 
