@@ -487,6 +487,7 @@ def compress(args):
 
 # main
 VERSION = VERSIONS[VERSION_INDEX]   # version of codec
+SIGN_VERSION = SIGN_VERSIONS[SIGN_INDEX]    # signature version
 HELP = 'blwz compression tool'
 
 import argparse
@@ -504,7 +505,7 @@ def resolve(args):
         raise TypeError('something wrong with the file names or directories named')
 
 def main(parser: argparse.ArgumentParser):
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s ' + VERSION)
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s ' + VERSION + '/' + SIGN_VERSION)
     parser.add_argument('-f', '--fast', action = 'store_true', help = 'fastest compression')
     parser.add_argument('-b', '--best', action = 'store_true', help = 'best compression')
     parser.add_argument('-l', '--level', help = 'compression level', type = int, choices = range(0, 10))
