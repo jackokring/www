@@ -16,5 +16,9 @@ It is thus an experiment in information "fission" in the partion of information 
 
 The "evapourate" is inferred at decompression as it has to have a necessary form to refuse the block to the required form is the hypothesis. Either it then further implies a fusion form exists or it doesn't.
 
+# `dx` calculus
+
+Some integration asymptotic series. Consider what gradient decent means when `f = Integral(f)'`, so a dominant integration in control system stability allows closing feedback loops and perhaps using an identity expression of the last stage input as the gradient. 
+
 Thanks
 The Management
