@@ -28,8 +28,8 @@ Browser Python via WASM is provided in `py.html` using a web worker. In a simila
 
 # Phinka
 
-The `phinka.sh` script launches as a module to avoid missing module references. Basically `python -m phinka "$@"` with arguments. It's also available via `pip install phinka` if you don't need the web server code. [Available on PyPI](https://pypi.org/project/phinka/).
+The `phinka.sh` script launches as a module to avoid missing module references. Basically `python -m phinka "$@"` with arguments. It's also available via `pip install phinka` if you don't need the web server code. [Available on PyPI](https://pypi.org/project/phinka/). `ln -s pip3 pip` is your friend. So is `sudo apt install python-is-python3` along with the module `venv`.
 
-`phinka.blwz` - a data-compression format using some of the best and adding in (or technically removing) **self-partition mutual information** (a form of information fission).
+`phinka.blwz` - a data-compression format using some of the best and adding in (or technically removing) **self-partition mutual information** (a form of information fission). In principal sections of the BWT could be removed as reconstructable just based on a length count and enough mutual information about previous and following letters. I expect that is computationally intensive though. A faster modulable source for information fusion technolgy is still sought.
 
-`phinka.dx` - calculus tools and other mathemeatical functions.
+`phinka.dx` - calculus tools and other mathemeatical functions. Various integral asymptotics about singularities, which could exhibit Goldstone oscillation of x, while f(x) remains constant perhaps?
