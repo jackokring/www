@@ -18,7 +18,7 @@ The "evapourate" is inferred at decompression as it has to have a necessary form
 
 # `dx` calculus
 
-Some integration asymptotic series. Consider what gradient decent means when `f = Integral(f)'`, so a dominant integration in control system stability allows closing feedback loops and perhaps using an identity expression of the last stage input as the gradient. 
+Some integration asymptotic series. Consider what gradient decent means when `f = Integral(f)'`, so a dominant integration in control system stability allows closing feedback loops and perhaps using an identity expression of the last stage input as the gradient. Given the anulus of convergence goes "off" as some "error" in polynomial greater than one powering, certain growth forms relating to the `P != NP` inverse exponential of the less than one powering supra(ex)ponetial.
 
 Thanks
 The Management
