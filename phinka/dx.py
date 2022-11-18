@@ -97,6 +97,9 @@ def integralLogAssistant(n, k, f, x):
         return l
     return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(grad(x * f(x))), x))  
 
+def log(x):
+    return math.log(x)
+
 def integralLog(n, f, x):
     """use log nested series approximation"""
     def multiply(n, x):
@@ -106,8 +109,9 @@ def integralLog(n, f, x):
             l.append(-xp)
             xp = xp * -x / (i + 2)  # as = 0 at calc for 1
         return l
-    logPart = x * f(x) * math.log(x)
-    entropyPart = -(x - x * math.log(x)) * seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(x * f(x)), x))  
+    lnx = log(x)
+    logPart = x * f(x) * lnx
+    entropyPart = -(x - x * lnx) * seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(x * f(x)), x))  
     total = logPart + entropyPart
     doubleSumParts = []
     scale = -1 / 2
