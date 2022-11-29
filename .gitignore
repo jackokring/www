@@ -7,4 +7,4 @@ dist/
 __pycache__/
 .mypy_cache/
 fp*
-/data
+data/
