@@ -16,6 +16,8 @@ It is thus an experiment in information "fission" in the partion of information 
 
 The "evapourate" is inferred at decompression as it has to have a necessary form to refuse the block to the required form is the hypothesis. Either it then further implies a fusion form exists or it doesn't.
 
+Look at `phinka.open` for a proxy similar to `gzip.open`.
+
 # `dx` calculus
 
 Some integration asymptotic series. Consider what gradient decent means when `f = Integral(f)'`, so a dominant integration in control system stability allows closing feedback loops and perhaps using an identity expression of the last stage input as the gradient. Given the anulus of convergence goes "off" as some "error" in polynomial greater than one powering, certain growth forms relating to the `P != NP` inverse exponential of the less than one powering supra(ex)ponetial. If accuracy as a minimal compute to form would prefer a more convergent series to match the nature of ther problem.
