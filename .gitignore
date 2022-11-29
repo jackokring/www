@@ -7,4 +7,6 @@ dist/
 __pycache__/
 .mypy_cache/
 fp*
+# fixed as turns into VSCode not greyed out by default
 data/
+/data
