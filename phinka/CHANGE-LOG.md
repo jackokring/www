@@ -1,7 +1,9 @@
 # 1.0.5
 
   * Version number includes signature version.
-  * 
+  * Added `dvc` directory `data`.
+  * Using `libnotify-bin`.
+  * Some tests added for `blwz`.
 
 # 1.0.4
 

@@ -2,7 +2,7 @@
 # apply certbot to machine (with web server not running)
 
 sudo apt update
-sudo apt install -y git python3 python3-venv libaugeas0 python-is-python3 openssl
+sudo apt install -y git python3 python3-venv libaugeas0 python-is-python3 openssl libnotify-bin
 
 sudo python -m venv /opt/certbot/
 sudo /opt/certbot/bin/pip install --upgrade pip
@@ -23,3 +23,5 @@ git clone https://github.com/jackokring/www.git
 # make virtual environment called venv
 cd ~/www
 python -m venv venv
+
+notify-send "One time configuration done"

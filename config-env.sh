@@ -30,3 +30,4 @@ sudo killall --user $USER ssl-boot.py
 
 # set config information
 
+notify-send "Environment configured"

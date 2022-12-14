@@ -19,3 +19,4 @@ python -m build
 
 # follow the PyPI $HOME/.pypirc advice
 twine upload dist/*
+notify-send "Built and uploaded Python module"
