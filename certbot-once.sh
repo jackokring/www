@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # apply certbot to machine (with web server not running)
-source apt.sh
+source config-env.sh
 
 sudo python -m venv /opt/certbot/
 sudo /opt/certbot/bin/pip install --upgrade pip

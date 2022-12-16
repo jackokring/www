@@ -1,7 +1,9 @@
 #!/usr/bin/bash
 # allow bootstrap config
 # make sure dependancies are updated
-source apt.sh
+# perform updates using apt
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential git python3 python3-venv libaugeas0 python-is-python3 openssl libnotify-bin
 
 # enter directory just in case not there
 if [ ! -d "~/www" ]; then
