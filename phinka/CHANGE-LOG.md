@@ -3,6 +3,7 @@
   * Version number includes signature version.
   * Added `dvc` directory `data`.
   * Using `libnotify-bin`.
+  * Make common `apt.sh`.
   * Some tests added for `blwz`.
 
 # 1.0.4

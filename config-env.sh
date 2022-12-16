@@ -1,6 +1,5 @@
 # make sure dependancies are updated
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential git
+source apt.sh
 
 # enter directory just in case not there
 cd ~/www

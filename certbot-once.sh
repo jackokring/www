@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 # apply certbot to machine (with web server not running)
-
-sudo apt update
-sudo apt install -y git python3 python3-venv libaugeas0 python-is-python3 openssl libnotify-bin
+source apt.sh
 
 sudo python -m venv /opt/certbot/
 sudo /opt/certbot/bin/pip install --upgrade pip
