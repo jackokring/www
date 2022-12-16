@@ -4,6 +4,11 @@ source apt.sh
 # enter directory just in case not there
 cd ~/www
 
+if [ ! -d "venv/bin" ]; then
+    # make virtual environment called venv
+    python -m venv venv
+fi
+
 # activate virtual environment
 source venv/bin/activate
 
