@@ -1,8 +1,17 @@
+#!/usr/bin/bash
+# allow bootstrap config
 # make sure dependancies are updated
 source apt.sh
 
 # enter directory just in case not there
+if [ ! -d "~/www" ]; then
+    # clone repository without secrets
+    cd ~
+    git clone https://github.com/jackokring/www.git
+fi
 cd ~/www
+# all shell scripts should be executable
+chmod +x *.sh
 
 if [ ! -d "venv/bin" ]; then
     # make virtual environment called venv
