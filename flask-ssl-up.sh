@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # bring up flask
 
 source config-env.sh

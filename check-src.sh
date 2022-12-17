@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # check source code
 
 # python ok type check

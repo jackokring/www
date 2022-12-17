@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # apply certbot to machine (with web server not running)
 source config-env.sh
 
