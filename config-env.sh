@@ -14,6 +14,8 @@ fi
 cd ~/www
 # all shell scripts should be executable
 chmod +x *.sh
+# might be useful
+echo $USER > username.txt
 
 if [ ! -d "venv/bin" ]; then
     # make virtual environment called venv
