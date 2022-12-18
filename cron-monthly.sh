@@ -4,4 +4,4 @@
 # update certbot for SSL
 /opt/certbot/bin/pip install --upgrade certbot
 
-notify-send "phinka cron monthly complete"
+$( dirname -- "$0"; )/notify-as-user.sh "phinka cron monthly complete"
