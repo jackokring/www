@@ -44,6 +44,9 @@ fi
 OLD=$(cat sec.txt)
 NET=$(($NS - $OLD))
 
+# step frame
+echo $NS > sec.txt
+
 # half hour
 if (( $NET > 30 * 60 )) ; then
 
