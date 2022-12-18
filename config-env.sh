@@ -14,9 +14,8 @@ DIR=$( dirname -- "$0"; )
 cd "$DIR"
 
 # enter directory just in case not there
-if [ ! -d ".git" ]; then
+if [ ! -d "www" ]; then
     # clone repository without secrets (in home ... for curl?)
-    cd ~
     git clone https://github.com/jackokring/www.git
     cd www
 fi

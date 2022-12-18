@@ -4,9 +4,9 @@
         {
             "label": "Type Check and Build",
             "command": "check-src.sh",
-            "args": [
-                "${workspaceFolder}"
-            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "group": {
                 "kind": "build"
             }
@@ -14,9 +14,9 @@
         {
             "label": "Build Python PyPI Distribution",
             "command": "build-module.sh",
-            "args": [
-                "${workspaceFolder}"
-            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "group": {
                 "kind": "build"
             }
@@ -24,9 +24,9 @@
         {
             "label": "Install Server SSL (Once Only)",
             "command": "certbot-once.sh",
-            "args": [
-                "${workspaceFolder}"
-            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "group": {
                 "kind": "build"
             }
@@ -34,9 +34,9 @@
         {
             "label": "Launch Flask",
             "command": "flask-up.sh",
-            "args": [
-                "${workspaceFolder}"
-            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "group": {
                 "kind": "build"
             }
