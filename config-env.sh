@@ -1,17 +1,26 @@
 #!/bin/bash
 # allow bootstrap config
+# curl -L https://raw.githubusercontent.com/jackokring/www/master/config-env.sh > install.sh
+# bash install.sh
+
 # make sure dependancies are updated
 # perform updates using apt
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential git python3 python3-venv libaugeas0 python-is-python3 openssl libnotify-bin xdotool
 
+# script directory
+DIR=$( dirname -- "$0"; )
+# "-bash" from | bash is not a proper directory
+cd "$DIR"
+
 # enter directory just in case not there
-if [ ! -d "~/www" ]; then
-    # clone repository without secrets
+if [ ! -d ".git" ]; then
+    # clone repository without secrets (in home ... for curl?)
     cd ~
     git clone https://github.com/jackokring/www.git
+    cd www
 fi
-cd ~/www
+
 # all shell scripts should be executable
 chmod +x *.sh
 # might be useful
@@ -26,10 +35,10 @@ fi
 source venv/bin/activate
 
 # set PATH so it includes bin if it exists
-if [ -d "$HOME/www/bin" ] ; then
+if [ -d "$DIR/bin" ] ; then
     # double brakets suspends many shell operators like >, &&, * ... allowing logic and matching
-    [[ ":$PATH:" != *":/path/to/add:"* ]] && PATH="$HOME/www/bin:$PATH"
-    chmod -R +x "$HOME/www/bin"
+    [[ ":$PATH:" != *":$DIR/bin:"* ]] && PATH="$DIR/bin:$PATH"
+    chmod -R +x "$DIR/bin"
 fi
 
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip

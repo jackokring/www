@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd ~/www
+# script directory
+DIR=$( dirname -- "$0"; )
+cd "$DIR"
 
 # N.B. Might need ~/.local/ copy to ~/www/venv/
 # It seems pip was in need of installing in the right place
