@@ -25,6 +25,12 @@ fi
 # activate virtual environment
 source venv/bin/activate
 
+# set PATH so it includes bin if it exists
+if [ -d "$HOME/www/bin" ] ; then
+    PATH="$HOME/www/bin:$PATH"
+    chmod -R +x "$HOME/www/bin"
+fi
+
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
 # seems /usr/bin/pip goes for ~/.local installing
 # ln -s venv/bin/pip3 venv/bin/pip

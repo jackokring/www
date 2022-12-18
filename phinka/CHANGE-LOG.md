@@ -5,6 +5,7 @@
   * Using `libnotify-bin`.
   * Make common `apt.sh`.
   * Added Chromebook assist `f11.sh` and `f12.sh` taking window name regex.
+  * `bin/phinka` added.
   * Some tests added for `blwz`.
 
 # 1.0.4
