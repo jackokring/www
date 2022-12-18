@@ -27,7 +27,8 @@ source venv/bin/activate
 
 # set PATH so it includes bin if it exists
 if [ -d "$HOME/www/bin" ] ; then
-    PATH="$HOME/www/bin:$PATH"
+    # double brakets suspends many shell operators like >, &&, * ... allowing logic and matching
+    [[ ":$PATH:" != *":/path/to/add:"* ]] && PATH="$HOME/www/bin:$PATH"
     chmod -R +x "$HOME/www/bin"
 fi
 
