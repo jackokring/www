@@ -2,6 +2,16 @@
 
 Place repository at `~/www` (`https://github.com/jackokring/www.git` while in the `~` directory) and then maybe use `certbot-once.sh` if you have **already** set a domain name to point to the IP and have not got a server running on port `80` yet. This is important as the bot uses its own bind to authenticate DNS correctness (and so ownership). A few cron jobs are set up to maintain the SSL certificate. **There is a task for this** setup to run `certbot-once.sh`. You'll likely have to `sudo apt install git` to be able to clone the repository on a basic Debian GCloud VM. The certbot sets a cron job to keep the SSL keys updated.
 
+# Simplified Curl Install
+
+```
+cd ~
+curl -L https://raw.githubusercontent.com/jackokring/www/master/config-env.sh > install.sh
+bash install.sh
+# | bash will not work as the directory of the install will not be set correctly.
+# you can rm ~/install.sh
+```
+
 # Check Source
 
 The script `check-src.sh` checks the sources for errors where possible. TypeScript to JavaScript is such a node hog so no not here. **There is a task for this**. This is where any checks before launch are performed. For example it makes all `.sh` scripts executable. All site specific JavaScript is in `static/js/main.js`.
