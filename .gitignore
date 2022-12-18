@@ -8,6 +8,7 @@ __pycache__/
 .mypy_cache/
 fp*
 username.txt
+sec.txt
 # fixed as turns into VSCode not greyed out by default
 data/
 /data

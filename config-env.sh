@@ -3,11 +3,6 @@
 # curl -L https://raw.githubusercontent.com/jackokring/www/master/config-env.sh > install.sh
 # bash install.sh
 
-# make sure dependancies are updated
-# perform updates using apt
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential git python3 python3-venv libaugeas0 python-is-python3 openssl libnotify-bin xdotool
-
 # script directory
 DIR=$( dirname -- "$0"; )
 # "-bash" from | bash is not a proper directory
@@ -40,6 +35,24 @@ if [ -d "$DIR/bin" ] ; then
     chmod -R +x "$DIR/bin"
 fi
 
+# check time net efficiency
+NS=$(date +%s)
+if [ ! -f "sec.txt"] ; then
+    echo 0 > sec.txt
+fi
+
+OLD=$(cat sec.txt)
+NET=$(($NS - $OLD))
+
+# half hour
+if (( $NET > 30 * 60 )) ; then
+
+# make sure dependancies are updated
+# perform updates using apt
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential git python3 python3-venv 
+sudo apt install -y libaugeas0 python-is-python3 openssl libnotify-bin xdotool
+
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
 # seems /usr/bin/pip goes for ~/.local installing
 # ln -s venv/bin/pip3 venv/bin/pip
@@ -55,6 +68,9 @@ pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel build twine l
 
 # dagshub
 pip install dvc
+
+# end net update limiter
+fi
 
 # make sure there's nothing running which is a duplicate
 sudo killall --user $USER flask
