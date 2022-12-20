@@ -53,7 +53,7 @@ if (( $NET > 30 * 60 )) ; then
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential git python3 python3-venv 
 sudo apt install -y libaugeas0 python-is-python3 openssl libnotify-bin xdotool
-sudo apt install -y cron
+sudo apt install -y cron nano
 
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
 # seems /usr/bin/pip goes for ~/.local installing
@@ -73,7 +73,7 @@ pip install markdown latexify-py lovely-tensors
 pip install dvc
 
 # end net update limiter
-echo "In .profile add once 'echo \$DBUS_SESSION_BUS_ADDRESS > ~/.dbus/bus' for notifications."
+echo "In 'nano ~/.profile' add once 'echo \$DBUS_SESSION_BUS_ADDRESS > ~/.dbus/bus' for notifications."
 echo "In 'sudo nano /etc/crontab' add once before jobs 'MAILTO=\"\"' for no cron emails."
 fi
 
