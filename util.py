@@ -2,7 +2,7 @@
 from markdown import markdown
 
 def markHtml(input):
-    """transform to html from mmarkdown"""
+    """transform to html from markdown"""
     return markdown(input)
 
 def ANSIColor(name):
