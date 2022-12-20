@@ -65,7 +65,8 @@ pip3 install --upgrade pip
 pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 
 # install python packages on top
-pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel build twine latexify-py lovely-tensors
+pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel build twine
+pip install markdown latexify-py lovely-tensors
 
 # dagshub
 pip install dvc
