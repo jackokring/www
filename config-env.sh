@@ -73,6 +73,8 @@ pip install markdown latexify-py lovely-tensors
 pip install dvc
 
 # end net update limiter
+echo "In .profile add once 'echo \$DBUS_SESSION_BUS_ADDRESS > ~/.dbus/bus' for notifications."
+echo "In 'sudo nano /etc/crontab' add once before jobs 'MAILTO=\"\"' for no cron emails."
 fi
 
 # make sure there's nothing running which is a duplicate
