@@ -53,7 +53,8 @@ if (( $NET > 30 * 60 )) ; then
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential git python3 python3-venv 
 sudo apt install -y libaugeas0 python-is-python3 openssl libnotify-bin xdotool
-sudo apt install -y cron nano
+sudo apt install -y cron nano libgl1-mesa-glx libegl1-mesa
+
 
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
 # seems /usr/bin/pip goes for ~/.local installing
@@ -67,7 +68,7 @@ pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n
 
 # install python packages on top
 pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel build twine
-pip install markdown latexify-py lovely-tensors
+pip install markdown latexify-py lovely-tensors jupyter pytest
 
 # dagshub
 pip install dvc
