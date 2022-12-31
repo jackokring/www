@@ -54,7 +54,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential git python3 python3-venv 
 sudo apt install -y libaugeas0 python-is-python3 openssl libnotify-bin xdotool
 sudo apt install -y cron nano libgl1-mesa-glx libegl1-mesa
-
+sudo apt install -y shellinabox
 
 # N.B. (venv) ~/www/venv/bin$ ln -s pip3 pip
 # seems /usr/bin/pip goes for ~/.local installing
