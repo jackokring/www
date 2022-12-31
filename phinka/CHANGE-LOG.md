@@ -8,6 +8,7 @@
   * `bin/phinka` added.
   * User `$USER` for `cron-monthly.sh`.
   * Some tests added for `blwz`.
+  * Added `shellinabox` for module `curses` for options on site interaction.
 
 # 1.0.4
 
