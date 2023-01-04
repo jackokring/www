@@ -249,6 +249,12 @@ class blwz: # capa not required for method context manager styling
                 raise ValueError('needs mode rb or wb')
         else:
             raise TypeError('requires a filename')
+    
+    # contextlib.contextmanager is too simple
+    # def f(x):
+    #   enter
+    #   yield cm
+    #   exit
 
     def __enter__(self):
         if self.context['verbose']:
