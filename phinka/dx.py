@@ -100,6 +100,11 @@ def integralLog(n, f, x):
     # although if they don't doesn't mean it doesn't of 3
     # An unproven on the https://en.wikipedia.org/wiki/Poincar%C3%A9_conjecture
     # extension of space about singularities?
+
+    # Um, so when fusing hydrogen, it kind of escapes control.
+    # So exactly what is its future? Is prediction dependent on
+    # motion through a space-time near an expanding pre-singular
+    # event? Wo exactly are the Romulans? :D
     def integralLogAssistant(n, k, f, x):
         """assistant function for nested series in log approximation"""
         def multiply(n, x):
