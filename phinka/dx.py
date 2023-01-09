@@ -91,6 +91,11 @@ def log(x):
 
 def integralLog(n, f, x):
     """use log nested series approximation"""
+    # warning a fourth form exist by virtue of commutivity of terms in series
+    # if they commute then this form is valid
+    # when they don't ... more symbolic calculus required
+    # N.B. Can't wait for it to heat uuuuup to try out my new Mathamatica T-shirt
+    # #WithWolfram
     def integralLogAssistant(n, k, f, x):
         """assistant function for nested series in log approximation"""
         def multiply(n, x):
