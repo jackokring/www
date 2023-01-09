@@ -97,6 +97,9 @@ def integralLog(n, f, x):
     # when they don't ... more symbolic calculus required
     # N.B. Can't wait for it to heat uuuuup to try out my new Mathamatica T-shirt
     # #WithWolfram
+    # although if they don't doesn't mean it doesn't of 3
+    # An unproven on the https://en.wikipedia.org/wiki/Poincar%C3%A9_conjecture
+    # extension of space about singularities?
     def integralLogAssistant(n, k, f, x):
         """assistant function for nested series in log approximation"""
         def multiply(n, x):
