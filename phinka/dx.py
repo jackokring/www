@@ -86,22 +86,21 @@ def integralPole(n, f, x):
         return l
     return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: (f(x) / x), x))
 
-def integralLogAssistant(n, k, f, x):
-    """assistant function for nested series in log approximation"""
-    def multiply(n, x):
-        l = []
-        xp = -x * x * math.pow(x, k) / (k + 2) # as = 0 at calc for 1
-        for j in range(0, n):
-            l.append(-xp)
-            xp = xp * -x / (k + j + 3)
-        return l
-    return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(grad(x * f(x))), x))  
-
 def log(x):
     return math.log(x)
 
 def integralLog(n, f, x):
     """use log nested series approximation"""
+    def integralLogAssistant(n, k, f, x):
+        """assistant function for nested series in log approximation"""
+        def multiply(n, x):
+            l = []
+            xp = -x * x * math.pow(x, k) / (k + 2) # as = 0 at calc for 1
+            for j in range(0, n):
+                l.append(-xp)
+                xp = xp * -x / (k + j + 3)
+            return l
+        return seriesAccelerate(integralAsymtotic(n, multiply, lambda x: grad(grad(x * f(x))), x))  
     def multiply(n, x):
         l = []
         xp = -1
