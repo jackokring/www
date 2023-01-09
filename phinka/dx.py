@@ -64,6 +64,7 @@ def seriesAccelerate(l):
     # tail recurse
     return seriesAccelerate(out)
 
+# singularity asymmtotics
 def integralNorm(n, f, x):
     """use normal x^0 -> 1 approximation"""
     def multiply(n, x):
