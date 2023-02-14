@@ -61,15 +61,18 @@ sudo apt install -y shellinabox imagemagick chafa
 # ln -s venv/bin/pip3 venv/bin/pip
 
 # update pip
-pip3 install --upgrade pip
+pip install --upgrade pip
 
-# update all outdated packages
-pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+# update all outdated packages (dependancy errors)
+# pip list -o | cut -f1 -d' ' | tr " " "\n" | awk '{if(NR>=3)print}' | cut -d' ' -f1 | xargs -n1 pip install -U 
+# check and downgrade
+# pip check | awk '{print $1}' | xargs pip install --upgrade
+
 
 # install python packages on top
 pip install autograd jax[cpu] mypy Flask pandas scikit-learn wheel build twine
 pip install markdown latexify-py lovely-tensors jupyter pytest
-pip install chafa.py
+pip install chafa.py sympy
 
 # dagshub
 pip install dvc
